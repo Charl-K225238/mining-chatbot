@@ -1,0 +1,14 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Benene_1_Shifts_personnel": {
+      "columns": [
+        "Date",
+        "Shift",
+        "Heure arrivée sur le plateau",
+        "Opérateur"
+      ],
+      "rows": 6828,
+      "data": [
+        {
+          "Date": 

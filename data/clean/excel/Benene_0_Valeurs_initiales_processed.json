@@ -1,0 +1,15 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Benene_0_Valeurs_initiales": {
+      "columns": [
+        "Date",
+        "Type",
+        "Stock",
+        "Valeur",
+        "Commentaire"
+      ],
+      "rows": 27,
+      "data": [
+        {
+          "Date": 

@@ -1,0 +1,35 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Benene_0_Chargeuses": {
+      "columns": [
+        "Chargeuse",
+        "Tonnage"
+      ],
+      "rows": 5,
+      "data": [
+        {
+          "Chargeuse": "CAT962H",
+          "Tonnage": 6.08
+        },
+        {
+          "Chargeuse": "Petite Chargeuse",
+          "Tonnage": 3.2
+        },
+        {
+          "Chargeuse": "La Pelle",
+          "Tonnage": 1.648
+        },
+        {
+          "Chargeuse": "Chargeuse moyenne",
+          "Tonnage": 4.96
+        },
+        {
+          "Chargeuse": "Volvo L220H",
+          "Tonnage": 10.0
+        }
+      ]
+    }
+  },
+  "filename": "Benene_0_Chargeuses.xlsx"
+}

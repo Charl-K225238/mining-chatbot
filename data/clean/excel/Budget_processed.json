@@ -1,0 +1,89 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Target": {
+      "columns": [
+        "Année",
+        "Mois",
+        "Tonnage à produire ",
+        "Tonnage à descendre"
+      ],
+      "rows": 12,
+      "data": [
+        {
+          "Année": 2025,
+          "Mois": "Janvier",
+          "Tonnage à produire ": 104231.88,
+          "Tonnage à descendre": 94500
+        },
+        {
+          "Année": 2025,
+          "Mois": "Février",
+          "Tonnage à produire ": 97125.08,
+          "Tonnage à descendre": 97020
+        },
+        {
+          "Année": 2025,
+          "Mois": "Mars",
+          "Tonnage à produire ": 90018.28,
+          "Tonnage à descendre": 94500
+        },
+        {
+          "Année": 2025,
+          "Mois": "Avril",
+          "Tonnage à produire ": 104231.88,
+          "Tonnage à descendre": 99225
+        },
+        {
+          "Année": 2025,
+          "Mois": "Mai",
+          "Tonnage à produire ": 104231.88,
+          "Tonnage à descendre": 94500
+        },
+        {
+          "Année": 2025,
+          "Mois": "Juin",
+          "Tonnage à produire ": 82911.48,
+          "Tonnage à descendre": 83160
+        },
+        {
+          "Année": 2025,
+          "Mois": "Juillet",
+          "Tonnage à produire ": 118445.48,
+          "Tonnage à descendre": 114660
+        },
+        {
+          "Année": 2025,
+          "Mois": "Août",
+          "Tonnage à produire ": 194250.16,
+          "Tonnage à descendre": 191520
+        },
+        {
+          "Année": 2025,
+          "Mois": "Septembre",
+          "Tonnage à produire ": 208463.76,
+          "Tonnage à descendre": 207480
+        },
+        {
+          "Année": 2025,
+          "Mois": "Octobre",
+          "Tonnage à produire ": 236890.96,
+          "Tonnage à descendre": 238140
+        },
+        {
+          "Année": 2025,
+          "Mois": "Novembre",
+          "Tonnage à produire ": 177193.84,
+          "Tonnage à descendre": 173880
+        },
+        {
+          "Année": 2025,
+          "Mois": "Décembre",
+          "Tonnage à produire ": 222677.36,
+          "Tonnage à descendre": 238448
+        }
+      ]
+    }
+  },
+  "filename": "Budget.xlsx"
+}

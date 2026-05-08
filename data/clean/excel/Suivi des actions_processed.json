@@ -1,0 +1,31 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Obligations": {
+      "columns": [
+        "Type",
+        "Titre des obligations",
+        "Description",
+        "Direction / Département",
+        "Statuts",
+        "Priorité",
+        "Périodicité",
+        "Période (début)",
+        "Période (fin)",
+        "Destinataire",
+        "Responsable R2M",
+        "Deadline",
+        "% Avancement",
+        "Observations"
+      ],
+      "rows": 40,
+      "data": [
+        {
+          "Type": "Rapport",
+          "Titre des obligations": "Rapport mensuel de production",
+          "Description": "Obligation de communiquer  à l'Administration des Mines en version physique et numérique, dans la première quinzaine de chaque mois, les statistiques de la production minière du mois précédent",
+          "Direction / Département": "Direction financière/ Mine /Logistique/ RH",
+          "Statuts": "Non réalisé",
+          "Priorité": 1,
+          "Périodicité": "Mensuelle",
+          "Période (début)": 

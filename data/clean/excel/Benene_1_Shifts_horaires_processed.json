@@ -1,0 +1,23 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Benene_1_Shifts_horaires": {
+      "columns": [
+        "Date",
+        "Shift",
+        "Heure Contrôle niveau et préchauffage (début)",
+        "Heure Contrôle niveau et préchauffage (fin)",
+        "Heure debut excavation",
+        "Heure fin excavation",
+        "Heure tambour",
+        "Heure moteur",
+        "Heure tambour total",
+        "Heure moteur total",
+        "Maintenance journalière",
+        "Maintenance journalière (fin)",
+        "Equipement"
+      ],
+      "rows": 1163,
+      "data": [
+        {
+          "Date": 

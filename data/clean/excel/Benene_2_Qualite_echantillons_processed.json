@@ -1,0 +1,25 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Benene_2_Qualite_echantillons": {
+      "columns": [
+        "Date Echantillonnage",
+        "ID ECH",
+        "POIDS",
+        "Tonnage/Ech",
+        "ZONE",
+        "STOCK/LOT PLATEAU",
+        "STOCK DSO",
+        "Laboratoire",
+        "Date Expédition",
+        "Date préparation mecanique / Date Réception Labo",
+        "Date Publication résultats",
+        "Al2O3",
+        "Fe2O3",
+        "SiO2",
+        "Observations"
+      ],
+      "rows": 1182,
+      "data": [
+        {
+          "Date Echantillonnage": 

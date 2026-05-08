@@ -1,0 +1,24 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Benene_1_Excavation": {
+      "columns": [
+        "Date",
+        "Shift",
+        "Zone d'excavation",
+        "Volume excavé (m3)",
+        "Tonnage QD",
+        "Tonnage MQ",
+        "Linéaire jour (m)",
+        "Profondeur moyenne (m)",
+        "Ecart (cm)",
+        "Volume excavé tenant compte l'écart(m3)",
+        "Tonnage excavé estimé (T)",
+        "Tonnage se referant à l'ecart  (T)",
+        "Tonnage BQ",
+        "Equipement"
+      ],
+      "rows": 1107,
+      "data": [
+        {
+          "Date": 

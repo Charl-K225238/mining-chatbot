@@ -1,0 +1,16 @@
+{
+  "type": "excel",
+  "sheets": {
+    "LOADING RATE": {
+      "columns": [
+        "DATE",
+        "QUANTITE CHARGEE",
+        "LIEU DE CHARGEMENT",
+        "ORIGINE STOCK",
+        "NAVIRE",
+        "COMMENTAIRE"
+      ],
+      "rows": 205,
+      "data": [
+        {
+          "DATE": 

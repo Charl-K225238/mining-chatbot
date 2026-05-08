@@ -1,0 +1,1372 @@
+============================================================
+  RAPPORT D'EXPLORATION — DONNÉES NETTOYÉES
+  Généré le : 2026-05-06 16:36:39
+============================================================
+
+📁 22 fichier(s) trouvé(s) :
+  • Benene_0_Chargeuses.xlsx
+  • Benene_0_Liste_engins.xlsx
+  • Benene_0_Objectifs.xlsx
+  • Benene_0_Personnel.xlsx
+  • Benene_0_Stocks.xlsx
+  • Benene_0_Valeurs_initiales.xlsx
+  • Benene_0_Zone_excavation.xlsx
+  • Benene_1_Excavation.xlsx
+  • Benene_1_Journal.xlsx
+  • Benene_1_Shifts_horaires.xlsx
+  • Benene_1_Shifts_personnel.xlsx
+  • Benene_2_Qualite_echantillons.xlsx
+  • Benene_2_Qualite_navires.xlsx
+  • Benene_3_Regul_Qté_stock.xlsx
+  • Benene_3_Regul_Qualité_stock.xlsx
+  • Budget.xlsx
+  • CARBURANT.xlsx
+  • DESCENTE MINERAI.xlsx
+  • PLAN D'ACTIONS DU PGES.xlsx
+  • PRODUCTIVITE PORT.xlsx
+  • Suivi des actions.xlsx
+  • TRANSPORT MINERAI PAA.xlsx
+
+
+############################################################
+  FICHIER : Benene_0_Chargeuses.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_0_Chargeuses.xlsx › Benene_0_Chargeuses
+──────────────────────────────────────────────────
+
+📐 Dimensions : 5 lignes × 2 colonnes
+
+🔠 Types de données :
+   Chargeuse                                     str
+   Tonnage                                       float64
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+           Chargeuse  Tonnage
+0            CAT962H    6.080
+1   Petite Chargeuse    3.200
+2           La Pelle    1.648
+3  Chargeuse moyenne    4.960
+4        Volvo L220H   10.000
+
+
+############################################################
+  FICHIER : Benene_0_Liste_engins.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_0_Liste_engins.xlsx › Benene_0_Liste_engins
+──────────────────────────────────────────────────
+
+📐 Dimensions : 88 lignes × 3 colonnes
+
+🔠 Types de données :
+   Type Engin                                    str
+   Code / Nom engin / Immatriculation            str
+   Propriétaire                                  str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Type Engin                                            10    11.4%  🟢
+   Propriétaire                                          57    64.8%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  2 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+  Type Engin  ... Propriétaire
+0      BENNE  ...        IVEQI
+1      BENNE  ...        IVEQI
+2      BENNE  ...        IVEQI
+3      BENNE  ...        IVEQI
+4      BENNE  ...        IVEQI
+
+[5 rows x 3 columns]
+
+
+############################################################
+  FICHIER : Benene_0_Objectifs.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_0_Objectifs.xlsx › Benene_0_Objectifs
+──────────────────────────────────────────────────
+
+📐 Dimensions : 780 lignes × 3 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Excavation Prévue (T)                         float64
+   Descente Prévue (T)                           float64
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Excavation Prévue (T)                                  3     0.4%  🟢
+   Descente Prévue (T)                                    3     0.4%  🟢
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  10 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+        Date  ...  Descente Prévue (T)
+0 2024-01-04  ...               2500.0
+1 2024-01-05  ...               2500.0
+2 2024-01-06  ...               2500.0
+3 2024-01-07  ...                  0.0
+4 2024-01-07  ...                  0.0
+
+[5 rows x 3 columns]
+
+
+############################################################
+  FICHIER : Benene_0_Personnel.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_0_Personnel.xlsx › Benene_0_Personnel
+──────────────────────────────────────────────────
+
+📐 Dimensions : 41 lignes × 3 colonnes
+
+🔠 Types de données :
+   ID                                            int64
+   Métier                                        str
+   Nom                                           str
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+   ID  ...                             Nom
+0   1  ...                  Agnero Liliane
+1   2  ...                  Armand Agoussi
+2   3  ...                      Atta Bindé
+3   4  ...                    Camara Samba
+4   5  ...  Coulibaly Melissa epse Kouakou
+
+[5 rows x 3 columns]
+
+
+############################################################
+  FICHIER : Benene_0_Stocks.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_0_Stocks.xlsx › Benene_0_Stocks
+──────────────────────────────────────────────────
+
+📐 Dimensions : 136 lignes × 3 colonnes
+
+🔠 Types de données :
+   Stock                                         str
+   Qualité à priori                              str
+   commentaire                                   str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   commentaire                                          101    74.3%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+  Stock Qualité à priori commentaire
+0     1               MQ         NaN
+1    10               BQ         NaN
+2    11               BQ         NaN
+3    12               BQ         NaN
+4    13               BQ         NaN
+
+
+############################################################
+  FICHIER : Benene_0_Valeurs_initiales.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_0_Valeurs_initiales.xlsx › Benene_0_Valeurs_initiales
+──────────────────────────────────────────────────
+
+📐 Dimensions : 27 lignes × 5 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Type                                          str
+   Stock                                         str
+   Valeur                                        float64
+   Commentaire                                   str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Stock                                                  8    29.6%  🟡
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+        Date  ...                                        Commentaire
+0 2024-01-01  ...  Source : Production Journalière 2023 (22 dec 2...
+1 2024-01-01  ...  Source : Production Journalière 2023 (22 dec 2...
+2 2024-01-01  ...  Source : Production Journalière 2023 (22 dec 2...
+3 2024-01-01  ...  Source : Production Journalière 2023 (22 dec 2...
+4 2024-01-01  ...  Source : Valorisation stock 2023 contrôle de G...
+
+[5 rows x 5 columns]
+
+
+############################################################
+  FICHIER : Benene_0_Zone_excavation.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_0_Zone_excavation.xlsx › Benene_0_Zone_excavation
+──────────────────────────────────────────────────
+
+📐 Dimensions : 22 lignes × 1 colonnes
+
+🔠 Types de données :
+   Zone d'excavation                             str
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+  Zone d'excavation
+0            Zone 1
+1           Zone 2a
+2     Zone_1_Centre
+3      Zone_1_Flanc
+4       Zone_1_Nord
+
+
+############################################################
+  FICHIER : Benene_1_Excavation.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_1_Excavation.xlsx › Benene_1_Excavation
+──────────────────────────────────────────────────
+
+📐 Dimensions : 1107 lignes × 14 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Shift                                         float64
+   Zone d'excavation                             str
+   Volume excavé (m3)                            float64
+   Tonnage QD                                    float64
+   Tonnage MQ                                    float64
+   Linéaire jour (m)                             float64
+   Profondeur moyenne (m)                        str
+   Ecart (cm)                                    float64
+   Volume excavé tenant compte l'écart(m3)       float64
+   Tonnage excavé estimé (T)                     float64
+   Tonnage se referant à l'ecart  (T)            float64
+   Tonnage BQ                                    float64
+   Equipement                                    str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Shift                                                  3     0.3%  🟢
+   Zone d'excavation                                    267    24.1%  🟡
+   Volume excavé (m3)                                    45     4.1%  🟢
+   Tonnage QD                                          1101    99.5%  🔴
+   Tonnage MQ                                           934    84.4%  🔴
+   Linéaire jour (m)                                    486    43.9%  🟡
+   Profondeur moyenne (m)                               447    40.4%  🟡
+   Ecart (cm)                                           275    24.8%  🟡
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  2 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+        Date  Shift  ...   Tonnage BQ          Equipement
+0 2024-01-03    1.0  ...  2597.322105  TRENCHER TRS N°296
+1 2024-01-04    1.0  ...  2650.134737  TRENCHER TRS N°296
+2 2024-01-05    1.0  ...  1297.258947  TRENCHER TRS N°296
+3 2024-01-08    1.0  ...  1429.991579  TRENCHER TRS N°296
+4 2024-01-09    1.0  ...  1242.421053  TRENCHER TRS N°296
+
+[5 rows x 14 columns]
+
+
+############################################################
+  FICHIER : Benene_1_Journal.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_1_Journal.xlsx › Benene_1_Journal
+──────────────────────────────────────────────────
+
+📐 Dimensions : 2389 lignes × 7 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Heure de début                                datetime64[us]
+   Heure de fin                                  datetime64[us]
+   Axe                                           str
+   Objet                                         str
+   Equipement                                    str
+   Commentaire                                   str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Date                                                   3     0.1%  🟢
+   Heure de début                                       186     7.8%  🟢
+   Heure de fin                                         369    15.4%  🟢
+   Axe                                                   27     1.1%  🟢
+   Objet                                                 19     0.8%  🟢
+   Commentaire                                          257    10.8%  🟢
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  9 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+        Date  ...                                        Commentaire
+0 2024-01-22  ...                        Arrêt GPS et reprise du GPS
+1 2024-01-22  ...                        Arrêt GPS et reprise du GPS
+2 2024-01-22  ...  Déplacement de la trencher vers la limite de l...
+3 2024-01-22  ...                                         850 litres
+4 2024-01-24  ...                        Arrêt GPS et reprise du GPS
+
+[5 rows x 7 columns]
+
+
+############################################################
+  FICHIER : Benene_1_Shifts_horaires.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_1_Shifts_horaires.xlsx › Benene_1_Shifts_horaires
+──────────────────────────────────────────────────
+
+📐 Dimensions : 1163 lignes × 13 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Shift                                         float64
+   Heure Contrôle niveau et préchauffage (début) datetime64[us]
+   Heure Contrôle niveau et préchauffage (fin)   datetime64[us]
+   Heure debut excavation                        datetime64[us]
+   Heure fin excavation                          datetime64[us]
+   Heure tambour                                 datetime64[us]
+   Heure moteur                                  datetime64[us]
+   Heure tambour total                           str
+   Heure moteur total                            str
+   Maintenance journalière                       datetime64[us]
+   Maintenance journalière (fin)                 datetime64[us]
+   Equipement                                    str
+
+🔍 Incohérences de types :
+   ⚠️  'Heure tambour total' (type=str) — nom suggère une date/heure
+   ⚠️  'Heure moteur total' (type=str) — nom suggère une date/heure
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Date                                                   1     0.1%  🟢
+   Shift                                                  2     0.2%  🟢
+   Heure Contrôle niveau et préchauffage (début)        851    73.2%  🔴
+   Heure Contrôle niveau et préchauffage (fin)          854    73.4%  🔴
+   Heure debut excavation                               379    32.6%  🟡
+   Heure fin excavation                                 383    32.9%  🟡
+   Heure tambour                                        363    31.2%  🟡
+   Heure moteur                                         350    30.1%  🟡
+   Heure tambour total                                  341    29.3%  🟡
+   Heure moteur total                                   341    29.3%  🟡
+   Maintenance journalière                              505    43.4%  🟡
+   Maintenance journalière (fin)                        508    43.7%  🟡
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  11 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+        Date  ...          Equipement
+0 2024-01-08  ...  TRENCHER TRS N°296
+1 2024-01-09  ...  TRENCHER TRS N°296
+2 2024-01-10  ...  TRENCHER TRS N°296
+3 2024-01-13  ...  TRENCHER TRS N°296
+4 2024-01-15  ...  TRENCHER TRS N°296
+
+[5 rows x 13 columns]
+
+
+############################################################
+  FICHIER : Benene_1_Shifts_personnel.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_1_Shifts_personnel.xlsx › Benene_1_Shifts_personnel
+──────────────────────────────────────────────────
+
+📐 Dimensions : 6828 lignes × 4 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Shift                                         float64
+   Heure arrivée sur le plateau                  datetime64[us]
+   Opérateur                                     str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Shift                                                  1     0.0%  🟢
+   Heure arrivée sur le plateau                          11     0.2%  🟢
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  151 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+        Date  ...                       Opérateur
+0 2024-01-03  ...  Coulibaly Melissa epse Kouakou
+1 2024-01-03  ...                         Lassina
+2 2024-01-03  ...                   Tiémélé Nanou
+3 2024-01-03  ...                  Agnero Liliane
+4 2024-01-03  ...                Essé Serge Roméo
+
+[5 rows x 4 columns]
+
+
+############################################################
+  FICHIER : Benene_2_Qualite_echantillons.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_2_Qualite_echantillons.xlsx › Benene_2_Qualite_echantillons
+──────────────────────────────────────────────────
+
+📐 Dimensions : 1182 lignes × 15 colonnes
+
+🔠 Types de données :
+   Date Echantillonnage                          datetime64[us]
+   ID ECH                                        str
+   POIDS                                         float64
+   Tonnage/Ech                                   str
+   ZONE                                          str
+   STOCK/LOT PLATEAU                             str
+   STOCK DSO                                     float64
+   Laboratoire                                   str
+   Date Expédition                               datetime64[us]
+   Date préparation mecanique / Date Réception Labo datetime64[us]
+   Date Publication résultats                    datetime64[us]
+   Al2O3                                         float64
+   Fe2O3                                         float64
+   SiO2                                          float64
+   Observations                                  str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   POIDS                                                 46     3.9%  🟢
+   Tonnage/Ech                                           16     1.4%  🟢
+   ZONE                                                 305    25.8%  🟡
+   STOCK/LOT PLATEAU                                   1162    98.3%  🔴
+   STOCK DSO                                             23     1.9%  🟢
+   Laboratoire                                           10     0.8%  🟢
+   Date Expédition                                      231    19.5%  🟢
+   Date préparation mecanique / Date Réception Labo        548    46.4%  🟡
+   Date Publication résultats                           550    46.5%  🟡
+   Al2O3                                                287    24.3%  🟡
+   Fe2O3                                                287    24.3%  🟡
+   SiO2                                                 287    24.3%  🟡
+   Observations                                         863    73.0%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  1 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+  Date Echantillonnage       ID ECH  ...  SiO2 Observations
+0           2023-08-03  LEB-STK0001  ...  4.96          NaN
+1           2023-08-04  LEB-STK0002  ...  3.03          NaN
+2           2023-08-04  LEB-STK0005  ...  5.76          NaN
+3           2023-08-04  LEB-STK0003  ...  3.86          NaN
+4           2023-08-04  LEB-STK0004  ...  3.64          NaN
+
+[5 rows x 15 columns]
+
+
+############################################################
+  FICHIER : Benene_2_Qualite_navires.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_2_Qualite_navires.xlsx › Benene_2_Qualite_navires
+──────────────────────────────────────────────────
+
+📐 Dimensions : 37 lignes × 8 colonnes
+
+🔠 Types de données :
+   Navire                                        str
+   Date arrivée PAA                              datetime64[us]
+   Al2O3 (SGS AFS)                               float64
+   SiO2 (SGS AFS)                                float64
+   Fe2O3 (SGS AFS)                               float64
+   Al2O3 (SGS CHINE)                             float64
+   SiO2 (SGS CHINE)                              float64
+   Fe2O3 (SGS CHINE)                             float64
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Date arrivée PAA                                       2     5.4%  🟢
+   Al2O3 (SGS AFS)                                       14    37.8%  🟡
+   SiO2 (SGS AFS)                                        14    37.8%  🟡
+   Fe2O3 (SGS AFS)                                       14    37.8%  🟡
+   Al2O3 (SGS CHINE)                                     15    40.5%  🟡
+   SiO2 (SGS CHINE)                                      15    40.5%  🟡
+   Fe2O3 (SGS CHINE)                                     15    40.5%  🟡
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+                Navire  ... Fe2O3 (SGS CHINE)
+0  MV XIN WU XIANG HAI  ...               NaN
+1    MV TOMINI LIBERTY  ...              6.35
+2    MV. CRIMSON QUEEN  ...             18.00
+3  MV. XIN HAI TONG 20  ...             17.51
+4    MV. TOP DILIGENCE  ...               NaN
+
+[5 rows x 8 columns]
+
+
+############################################################
+  FICHIER : Benene_3_Regul_Qté_stock.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_3_Regul_Qté_stock.xlsx › Benene_3_Regul_Qté_stock
+──────────────────────────────────────────────────
+
+📐 Dimensions : 233 lignes × 5 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Stock                                         str
+   Valeur (T)                                    float64
+   Commentaire                                   str
+   Source                                        str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Commentaire                                            8     3.4%  🟢
+   Source                                               149    64.0%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+        Date  ...        Source
+0 2024-01-06  ...  Plateau - BQ
+1 2024-01-22  ...  Plateau - BQ
+2 2024-01-22  ...  Plateau - BQ
+3 2024-01-26  ...  Plateau - BQ
+4 2024-01-27  ...  Plateau - BQ
+
+[5 rows x 5 columns]
+
+
+############################################################
+  FICHIER : Benene_3_Regul_Qualité_stock.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Benene_3_Regul_Qualité_stock.xlsx › Benene_3_Regul_Qualité_stock
+──────────────────────────────────────────────────
+
+📐 Dimensions : 9 lignes × 3 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Stock                                         int64
+   Qualité                                       str
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+        Date  Stock Qualité
+0 2024-07-18     12      MQ
+1 2024-07-18      7      MQ
+2 2024-07-19     22      QD
+3 2024-11-13     46      QD
+4 2024-11-14     47      MQ
+
+
+############################################################
+  FICHIER : Budget.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Budget.xlsx › Target
+──────────────────────────────────────────────────
+
+📐 Dimensions : 12 lignes × 4 colonnes
+
+🔠 Types de données :
+   Année                                         int64
+   Mois                                          str
+   Tonnage à produire                            float64
+   Tonnage à descendre                           int64
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+   Année  ... Tonnage à descendre
+0   2025  ...               94500
+1   2025  ...               97020
+2   2025  ...               94500
+3   2025  ...               99225
+4   2025  ...               94500
+
+[5 rows x 4 columns]
+
+
+############################################################
+  FICHIER : CARBURANT.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  CARBURANT.xlsx › LISTE ENGINS MINE
+──────────────────────────────────────────────────
+
+📐 Dimensions : 88 lignes × 13 colonnes
+
+🔠 Types de données :
+   ID                                            float64
+   Type Engin                                    str
+   Code / Nom engin / Immatriculation            str
+   Propriétaire                                  str
+   Activité                                      str
+   Consommation moyenne (L/h)                    float64
+   Date arrivée                                  datetime64[us]
+   Jauge Arrivée (01/07/2023)                    str
+   Kilométrage (01/07/2023)                      float64
+   Capacité réservoir                            float64
+   Objectif heures travail / jour                float64
+   Tarif                                         float64
+   Centre attitré                                str
+
+🔍 Incohérences de types :
+   ⚠️  'Objectif heures travail / jour' (type=float64) — nom suggère une date/heure
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   ID                                                    55    62.5%  🔴
+   Type Engin                                            17    19.3%  🟢
+   Propriétaire                                          47    53.4%  🔴
+   Activité                                              53    60.2%  🔴
+   Consommation moyenne (L/h)                            57    64.8%  🔴
+   Date arrivée                                          62    70.5%  🔴
+   Jauge Arrivée (01/07/2023)                            83    94.3%  🔴
+   Kilométrage (01/07/2023)                              71    80.7%  🔴
+   Capacité réservoir                                    70    79.5%  🔴
+   Objectif heures travail / jour                        60    68.2%  🔴
+   Tarif                                                 49    55.7%  🔴
+   Centre attitré                                        83    94.3%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+     ID Type Engin  ...     Tarif        Centre attitré
+0   NaN        NaN  ...       NaN                   NaN
+1  28.0      BENNE  ...  120000.0                   NaN
+2  25.0      BENNE  ...  120000.0                   NaN
+3  19.0      BENNE  ...       NaN  Gestion de carburant
+4  26.0      BENNE  ...  120000.0                   NaN
+
+[5 rows x 13 columns]
+
+──────────────────────────────────────────────────
+  CARBURANT.xlsx › CITERN IVEQI
+──────────────────────────────────────────────────
+
+📐 Dimensions : 4775 lignes × 6 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Engin/Equipement                              str
+   Depotage                                      float64
+   Quantité Servie (L)                           float64
+   Quantité Restante (L)                         float64
+   Observation                                   str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Engin/Equipement                                       4     0.1%  🟢
+   Depotage                                            3921    82.1%  🔴
+   Quantité Servie (L)                                  858    18.0%  🟢
+   Quantité Restante (L)                                 47     1.0%  🟢
+   Observation                                         4455    93.3%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  2 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+        Date  ... Observation
+0 2023-08-08  ...         NaN
+1 2023-08-08  ...         NaN
+2 2023-08-09  ...         NaN
+3 2023-08-10  ...         NaN
+4 2023-08-10  ...         NaN
+
+[5 rows x 6 columns]
+
+──────────────────────────────────────────────────
+  CARBURANT.xlsx › ACTIVITES
+──────────────────────────────────────────────────
+
+📐 Dimensions : 14272 lignes × 11 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+    MACHINE                                      str
+   OPERATEUR PRINCIPAL                           str
+   heure début                                   float64
+   heure fin                                     float64
+   heure                                         float64
+   km début                                      float64
+   km fin                                        float64
+   Vit. moy (km/h)                               float64
+   Libellé activité                              str
+   Activités                                     str
+
+🔍 Incohérences de types :
+   ⚠️  'heure début' (type=float64) — nom suggère une date/heure
+   ⚠️  'heure fin' (type=float64) — nom suggère une date/heure
+   ⚠️  'heure' (type=float64) — nom suggère une date/heure
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   OPERATEUR PRINCIPAL                                13698    96.0%  🔴
+   heure début                                           99     0.7%  🟢
+   heure fin                                             99     0.7%  🟢
+   heure                                                  1     0.0%  🟢
+   km début                                           13999    98.1%  🔴
+   km fin                                             13999    98.1%  🔴
+   Vit. moy (km/h)                                    13619    95.4%  🔴
+   Libellé activité                                      11     0.1%  🟢
+   Activités                                            152     1.1%  🟢
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  26 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+        Date  ...                Activités
+0 2023-04-04  ...                      NaN
+1 2023-08-01  ...  escavation et entretien
+2 2023-08-01  ...                      NaN
+3 2023-08-01  ...                      NaN
+4 2023-08-01  ...                      NaN
+
+[5 rows x 11 columns]
+
+──────────────────────────────────────────────────
+  CARBURANT.xlsx › CUVE PETRO-IVOIRE
+──────────────────────────────────────────────────
+
+📐 Dimensions : 6717 lignes × 8 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Engin/Equipement                              str
+   Quantité Initiale Théorique (L)               float64
+   Depotage                                      float64
+   Quantité Servie (L)                           float64
+   Quantité Restante (L)                         float64
+   Jauge                                         float64
+   Observation                                   str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Date                                                   8     0.1%  🟢
+   Engin/Equipement                                      17     0.2%  🟢
+   Quantité Initiale Théorique (L)                     6716   100.0%  🔴
+   Depotage                                            6632    98.7%  🔴
+   Quantité Servie (L)                                  102     1.5%  🟢
+   Quantité Restante (L)                                  1     0.0%  🟢
+   Jauge                                               5889    87.7%  🔴
+   Observation                                         6607    98.4%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  7 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+        Date  ... Observation
+0 2023-08-01  ...         NaN
+1 2023-08-01  ...         NaN
+2 2023-08-01  ...         NaN
+3 2023-08-01  ...         NaN
+4 2023-08-02  ...         NaN
+
+[5 rows x 8 columns]
+
+──────────────────────────────────────────────────
+  CARBURANT.xlsx › LIBELLE ACTIVITE
+──────────────────────────────────────────────────
+
+📐 Dimensions : 21 lignes × 1 colonnes
+
+🔠 Types de données :
+   Libellé activité                              str
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+         Libellé activité
+0  Chargement - transfert
+1    Selection de minerai
+2              Excavation
+3     Alimentation engins
+4         Mise en tas DSO
+
+
+############################################################
+  FICHIER : DESCENTE MINERAI.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  DESCENTE MINERAI.xlsx › ALL
+──────────────────────────────────────────────────
+
+📐 Dimensions : 8228 lignes × 13 colonnes
+
+🔠 Types de données :
+   DATE                                          datetime64[us]
+   Site                                          str
+   Responsable site                              str
+   Produit                                       str
+   Code / Nom engin / Immatriculation            str
+   SOCIETE DE TRANSPORT                          str
+   NOMBRE VOYAGE                                 float64
+   TONNAGE / VOYAGE                              int64
+   QUALITE                                       str
+   QUANTITE JOURNALIERE DESCENDUE (T)            int64
+   ZONE DE STOCKAGE                              str
+   OBSERVATION                                   str
+   N°CAMION                                      str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Responsable site                                       1     0.0%  🟢
+   NOMBRE VOYAGE                                        155     1.9%  🟢
+   OBSERVATION                                         6183    75.2%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ⚠️  11 doublon(s) détecté(s)
+
+🔍 Aperçu (5 premières lignes) :
+        DATE    Site  ... OBSERVATION   N°CAMION
+0 2023-08-03  Bénéné  ...         NaN  TOMBEREAU
+1 2023-08-03  Bénéné  ...         NaN  TOMBEREAU
+2 2023-08-03  Bénéné  ...         NaN  TOMBEREAU
+3 2023-08-04  Bénéné  ...         NaN  TOMBEREAU
+4 2023-08-04  Bénéné  ...         NaN  TOMBEREAU
+
+[5 rows x 13 columns]
+
+
+############################################################
+  FICHIER : PLAN D'ACTIONS DU PGES.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  PLAN D'ACTIONS DU PGES.xlsx › LEB
+──────────────────────────────────────────────────
+
+📐 Dimensions : 54 lignes × 9 colonnes
+
+🔠 Types de données :
+   N°                                            int64
+    Actions PGES / Recommandation ANDE           str
+   Sous actions                                  str
+   Livrable                                      str
+   Responsable                                   str
+   Date de réalisation sous-action               str
+   Échéance                                      object
+   Niveau d'avancement                           str
+   Commentaires                                  str
+
+🔍 Incohérences de types :
+   ⚠️  'Date de réalisation sous-action' (type=str) — nom suggère une date/heure
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Sous actions                                          49    90.7%  🔴
+   Date de réalisation sous-action                       49    90.7%  🔴
+   Niveau d'avancement                                   49    90.7%  🔴
+   Commentaires                                          30    55.6%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+   N°  ...                                       Commentaires
+0   1  ...                                                NaN
+1   2  ...  Achever l'implantation des panneaux de signali...
+2   3  ...  Faire le plan des pictogrammes + valider la ma...
+3   4  ...  Faire le plan des consignes + valider la maque...
+4   5  ...  Continuer l'induction à la sécurité des employ...
+
+[5 rows x 9 columns]
+
+──────────────────────────────────────────────────
+  PLAN D'ACTIONS DU PGES.xlsx › Feuil1
+──────────────────────────────────────────────────
+
+📐 Dimensions : 25 lignes × 1 colonnes
+
+🔠 Types de données :
+   Statut de l'action                            object
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+    Statut de l'action
+0           Non débuté
+1             En cours
+2               Achevé
+3  Niveau d'avancement
+4                    0
+
+──────────────────────────────────────────────────
+  PLAN D'ACTIONS DU PGES.xlsx › EDIT
+──────────────────────────────────────────────────
+
+📐 Dimensions : 54 lignes × 10 colonnes
+
+🔠 Types de données :
+   N°                                            int64
+    Actions PGES / Recommandation ANDE           str
+   Sous actions                                  str
+   Livrable                                      str
+   Responsable                                   str
+   Date de réalisation sous-action               str
+   Échéance                                      object
+   Date de réalisation action                    datetime64[us]
+   Niveau d'avancement                           object
+   Commentaires                                  str
+
+🔍 Incohérences de types :
+   ⚠️  'Date de réalisation sous-action' (type=str) — nom suggère une date/heure
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Sous actions                                          49    90.7%  🔴
+   Date de réalisation sous-action                       49    90.7%  🔴
+   Date de réalisation action                            26    48.1%  🟡
+   Niveau d'avancement                                   45    83.3%  🔴
+   Commentaires                                          23    42.6%  🟡
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+   N°  ...                                       Commentaires
+0   1  ...                                                NaN
+1   2  ...  Achever l'implantation des panneaux de signali...
+2   3  ...  Faire le plan des pictogrammes + valider la ma...
+3   4  ...  Faire le plan des consignes + valider la maque...
+4   5  ...  Continuer l'induction à la sécurité des employ...
+
+[5 rows x 10 columns]
+
+
+############################################################
+  FICHIER : PRODUCTIVITE PORT.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  PRODUCTIVITE PORT.xlsx › LOADING RATE
+──────────────────────────────────────────────────
+
+📐 Dimensions : 205 lignes × 6 colonnes
+
+🔠 Types de données :
+   DATE                                          datetime64[us]
+   QUANTITE CHARGEE                              float64
+   LIEU DE CHARGEMENT                            str
+   ORIGINE STOCK                                 str
+   NAVIRE                                        str
+   COMMENTAIRE                                   str
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+        DATE  ...                                        COMMENTAIRE
+0 2023-01-15  ...  Info Contrôle de gestion valorisation stocks /...
+1 2023-02-12  ...  Info Contrôle de gestion valorisation stocks /...
+2 2023-11-22  ...                                     Ancien stock :
+3 2023-11-23  ...                                Ancien stock : TP13
+4 2023-11-24  ...                                Ancien stock : TP13
+
+[5 rows x 6 columns]
+
+──────────────────────────────────────────────────
+  PRODUCTIVITE PORT.xlsx › VOYAGE NAVIRE
+──────────────────────────────────────────────────
+
+📐 Dimensions : 45 lignes × 5 colonnes
+
+🔠 Types de données :
+   DATE ARRIVEE                                  datetime64[us]
+   DATE DE DEPART                                datetime64[us]
+   NOM DU NAVIRE                                 str
+   OBJECTIF QUANTITE                             float64
+   NOMBRE DE JOURS OPERATIONS PREVUS             int64
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+  DATE ARRIVEE  ... NOMBRE DE JOURS OPERATIONS PREVUS
+0   2023-01-10  ...                                 5
+1   2023-02-07  ...                                 5
+2   2023-11-22  ...                                 5
+3   2024-01-11  ...                                 5
+4   2024-01-16  ...                                 5
+
+[5 rows x 5 columns]
+
+──────────────────────────────────────────────────
+  PRODUCTIVITE PORT.xlsx › LISTE NAVIRE
+──────────────────────────────────────────────────
+
+📐 Dimensions : 44 lignes × 12 colonnes
+
+🔠 Types de données :
+   NAME                                          str
+   INFO 1                                        str
+   INFO 2                                        str
+   INFO 3                                        str
+   INFO 4                                        str
+   INFO 5                                        str
+   INFO 6                                        str
+   INFO 7                                        str
+   INFO 8                                        str
+   INFO 9                                        str
+   INFO 10                                       str
+   INFO 11                                       str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   INFO 2                                                 4     9.1%  🟢
+   INFO 5                                                 3     6.8%  🟢
+   INFO 8                                                 3     6.8%  🟢
+   INFO 9                                                 1     2.3%  🟢
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+                  NAME  ...  INFO 11
+0    MV. CRIMSON QUEEN  ...  ADA WOG
+1  MV. XIN HAI TONG 20  ...  ADA WOG
+2    MV. TOP DILIGENCE  ...  ADA WOG
+3   MV. SIMPLE HONESTY  ...      ADA
+4     MV.LOWLANDS HOPE  ...  ADA WOG
+
+[5 rows x 12 columns]
+
+──────────────────────────────────────────────────
+  PRODUCTIVITE PORT.xlsx › REGUL
+──────────────────────────────────────────────────
+
+📐 Dimensions : 4 lignes × 4 colonnes
+
+🔠 Types de données :
+   DATE                                          datetime64[us]
+   STOCK                                         str
+   VALEUR                                        float64
+   COMMENTAIRE                                   str
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+        DATE  ...                                        COMMENTAIRE
+0 2023-01-01  ...  REPORT DU STOCK AU PORT AVANT 2023 (info Valor...
+1 2023-01-31  ...  Minerai arrivé au PAA en janvier 2023 (info Va...
+2 2023-02-28  ...  Minerai arrivé au PAA en fevrier 2023 (info Va...
+3 2025-02-18  ...  Regul suite constat Navire MV EASTERN CAMELIA ...
+
+[4 rows x 4 columns]
+
+──────────────────────────────────────────────────
+  PRODUCTIVITE PORT.xlsx › OBJECTIF JR
+──────────────────────────────────────────────────
+
+📐 Dimensions : 731 lignes × 2 colonnes
+
+🔠 Types de données :
+   Date                                          datetime64[us]
+   Tonnage prévue (Kg)                           int64
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+        Date  Tonnage prévue (Kg)
+0 2024-01-01              1935500
+1 2024-01-02              1935500
+2 2024-01-03              1935500
+3 2024-01-04              1935500
+4 2024-01-05              1935500
+
+──────────────────────────────────────────────────
+  PRODUCTIVITE PORT.xlsx › INFOS STOCK
+──────────────────────────────────────────────────
+
+📐 Dimensions : 2 lignes × 1 colonnes
+
+🔠 Types de données :
+   STOCKS                                        str
+
+❓ Valeurs manquantes :
+   ✅ Aucune valeur manquante
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+  STOCKS
+0   TP13
+1   TP15
+
+
+############################################################
+  FICHIER : Suivi des actions.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  Suivi des actions.xlsx › Obligations
+──────────────────────────────────────────────────
+
+📐 Dimensions : 40 lignes × 14 colonnes
+
+🔠 Types de données :
+   Type                                          str
+   Titre des obligations                         str
+   Description                                   str
+   Direction / Département                       str
+   Statuts                                       str
+   Priorité                                      int64
+   Périodicité                                   str
+   Période (début)                               datetime64[us]
+   Période (fin)                                 datetime64[us]
+   Destinataire                                  str
+   Responsable R2M                               str
+   Deadline                                      datetime64[us]
+   % Avancement                                  float64
+   Observations                                  str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Périodicité                                            3     7.5%  🟢
+   Période (début)                                       35    87.5%  🔴
+   Période (fin)                                         35    87.5%  🔴
+   Destinataire                                           8    20.0%  🟡
+   Deadline                                              34    85.0%  🔴
+   % Avancement                                          25    62.5%  🔴
+   Observations                                          37    92.5%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+      Type  ...         Observations
+0  Rapport  ...                  NaN
+1   Action  ...  Je vais voir Matoma
+2  Rapport  ...                  NaN
+3  Rapport  ...                  NaN
+4  Rapport  ...                  NaN
+
+[5 rows x 14 columns]
+
+──────────────────────────────────────────────────
+  Suivi des actions.xlsx › Listes de choix
+──────────────────────────────────────────────────
+
+📐 Dimensions : 20 lignes × 7 colonnes
+
+🔠 Types de données :
+   Type                                          str
+   Catégories                                    str
+   PRIORITE                                      float64
+   PERIODICITE                                   str
+   RESPONSABLE R2M                               str
+   % Avancement                                  float64
+   Statuts taches                                str
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   Type                                                  18    90.0%  🔴
+   Catégories                                            18    90.0%  🔴
+   PRIORITE                                              17    85.0%  🔴
+   PERIODICITE                                           14    70.0%  🔴
+   RESPONSABLE R2M                                        9    45.0%  🟡
+   Statuts taches                                        17    85.0%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+      Type Catégories  ...  % Avancement Statuts taches
+0   Action       PGES  ...          0.05        Réalisé
+1  Rapport  A definir  ...          0.10    Non réalisé
+2      NaN        NaN  ...          0.15       En cours
+3      NaN        NaN  ...          0.20            NaN
+4      NaN        NaN  ...          0.25            NaN
+
+[5 rows x 7 columns]
+
+
+############################################################
+  FICHIER : TRANSPORT MINERAI PAA.xlsx
+############################################################
+
+──────────────────────────────────────────────────
+  TRANSPORT MINERAI PAA.xlsx › TRANSPORT MINERAI PAA
+──────────────────────────────────────────────────
+
+📐 Dimensions : 48074 lignes × 18 colonnes
+
+🔠 Types de données :
+   DATE DEPART                                   datetime64[us]
+   HEURE DEPART                                  object
+   N° CAMION                                     str
+   SOCIETE DE TRANSPORT                          str
+   N° STOCK PRELEVEMENT                          object
+   N° BL                                         float64
+   P1 TARE (Kg)                                  object
+   POIDS CHARGEE P2 (Kg)                         float64
+   QUANTITE TRANSPORTEE (Kg)                     object
+   N° TICKET PAA                                 object
+   P1 TARE (Kg) PAA                              object
+   POIDS CHARGEE P2 (Kg) PAA                     object
+   QUANTITE TRANSPORTEE PAA (Kg)                 float64
+   DATE ARRIVEE PAA                              datetime64[us]
+   HEURE ARRIVEE PAA                             object
+   DESTINATION                                   str
+   OBSERVATIONS                                  str
+   TRANSPORT ANNULE?                             str
+
+🔍 Incohérences de types :
+   ⚠️  'HEURE DEPART' (type=object) — nom suggère une date/heure
+   ⚠️  'HEURE ARRIVEE PAA' (type=object) — nom suggère une date/heure
+
+❓ Valeurs manquantes :
+   Colonne                                         Manquant        %  Niveau
+   ───────────────────────────────────────────── ──────────  ───────  ──────
+   DATE DEPART                                          767     1.6%  🟢
+   HEURE DEPART                                        1229     2.6%  🟢
+   N° CAMION                                            789     1.6%  🟢
+   SOCIETE DE TRANSPORT                                 765     1.6%  🟢
+   N° STOCK PRELEVEMENT                                 766     1.6%  🟢
+   N° BL                                                  1     0.0%  🟢
+   P1 TARE (Kg)                                         969     2.0%  🟢
+   POIDS CHARGEE P2 (Kg)                                971     2.0%  🟢
+   QUANTITE TRANSPORTEE (Kg)                            617     1.3%  🟢
+   N° TICKET PAA                                        821     1.7%  🟢
+   P1 TARE (Kg) PAA                                     820     1.7%  🟢
+   POIDS CHARGEE P2 (Kg) PAA                            820     1.7%  🟢
+   QUANTITE TRANSPORTEE PAA (Kg)                        614     1.3%  🟢
+   DATE ARRIVEE PAA                                     820     1.7%  🟢
+   HEURE ARRIVEE PAA                                    825     1.7%  🟢
+   DESTINATION                                          745     1.6%  🟢
+   OBSERVATIONS                                       48001    99.8%  🔴
+   TRANSPORT ANNULE?                                  48042    99.9%  🔴
+
+   Légende : 🟢 < 20.0%   🟡 20.0–50.0%   🔴 > 50.0%
+
+🔁 Doublons : ✅ Aucun doublon
+
+🔍 Aperçu (5 premières lignes) :
+  DATE DEPART  ... TRANSPORT ANNULE?
+0  2023-10-16  ...               NaN
+1  2023-10-16  ...               NaN
+2  2023-10-16  ...               NaN
+3  2023-10-16  ...               NaN
+4  2023-10-16  ...               NaN
+
+[5 rows x 18 columns]
+
+
+============================================================
+  RÉSUMÉ GLOBAL
+============================================================
+  Fichiers explorés : 22
+  Légende niveaux de valeurs manquantes :
+    🟢 Bon       : < 20.0% de valeurs manquantes
+    🟡 Attention : 20.0–50.0% de valeurs manquantes
+    🔴 Critique  : > 50.0% de valeurs manquantes
+
+  ✅ Rapport sauvegardé : C:\Users\james\Downloads\Rapports BI\R2M\Outil Q&R Mine Langage Naturel\Data\Clean\rapport_exploration_clean.txt
+============================================================

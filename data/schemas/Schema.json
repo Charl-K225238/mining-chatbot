@@ -1,0 +1,2123 @@
+{
+  "catalog": {
+    "title": "DATA SCHEMA CATALOG",
+    "version": "1.0",
+    "objective": "documenter toutes les sources de données, leur rôle métier, leurs structures et leurs relations."
+  },
+  "domain_model": {
+    "🔥 Domaine Production": [
+      "benene_1_excavation",
+      "descente_minerai",
+      "transport_minerai_paa",
+      "productivite_port"
+    ],
+    "⛽ Domaine Logistique / Carburant": [
+      "carburant"
+    ],
+    "🧪 Domaine Qualité": [
+      "benene_2_qualite_echantillons",
+      "benene_2_qualite_navires",
+      "benene_3_regul_qualité_stock"
+    ],
+    "👥 Domaine RH / Opérations": [
+      "benene_0_personnel",
+      "benene_1_shifts_personnel",
+      "suivi_des_actions"
+    ],
+    "📊 Domaine Planification / Budget": [
+      "budget",
+      "plan_d_actions_du_pges",
+      "suivi_des_actions"
+    ],
+    "📅 Domaine Référentiel": [
+      "benene_0_liste_engins",
+      "benene_0_chargeuses",
+      "calendar"
+    ]
+  },
+  "relations": {
+    "🔥 Production": [
+      "Excavation ↔ Descente Minerai ↔ Transport PAA"
+    ],
+    "⛽ Carburant": [
+      "CARBURANT ↔ ENGINS ↔ ACTIVITES ↔ EXCAVATION"
+    ],
+    "🧪 Qualité": [
+      "Echantillons ↔ Navires ↔ Stocks"
+    ],
+    "👥 RH": [
+      "Personnel ↔ Shifts ↔ Activités machines"
+    ],
+    "📊 Planification": [
+      "Budget ↔ Production réelle"
+    ],
+    "📅 Calendrier": [
+      "Calendrier ↔ Toutes les tables temporelles"
+    ]
+  },
+  "quality_summary": [
+    "doublons fréquents",
+    "incohérences de types (object vs float)",
+    "colonnes non normalisées",
+    "manque de clés uniques"
+  ],
+  "usage_summary": [
+    "documentation data",
+    "onboarding analystes",
+    "base pour dashboard Power BI",
+    "alimentation chatbot / RAG",
+    "audit qualité données"
+  ],
+  "calendar_table": {
+    "description": "Table calendrier pour analyses temporelles",
+    "columns": [
+      "Date",
+      "Année",
+      "Mois",
+      "Nom_Mois",
+      "Jour",
+      "Jour_Semaine",
+      "Nom_Jour_Semaine",
+      "Semaine_Année",
+      "Trimestre",
+      "Semestre",
+      "Est_Weekend",
+      "Est_Jour_Férié",
+      "Fin_De_Mois",
+      "Fin_De_Trimestre",
+      "Fin_De_Semestre",
+      "Fin_De_Année",
+      "Mois_Année",
+      "Trimestre_Année",
+      "Semestre_Année",
+      "Semaine_Mois",
+      "Est_Jour_Ouvré",
+      "Saison",
+      "Période_Fiscale"
+    ],
+    "usage": "Relations temporelles dans Power BI et analyses par périodes"
+  },
+  "files": [
+    {
+      "file_name": "Benene_0_Chargeuses.xlsx",
+      "file_key": "Benene_0_Chargeuses",
+      "description": "Liste des chargeuses et tonnages pour l'exploitation.",
+      "role": "Référentiel des chargeuses utilisées sur site avec leur capacité de tonnage.",
+      "usage": [
+        "Calcul de capacité de production",
+        "Analyse performance engins"
+      ],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_0_Chargeuses.xlsx › Benene_0_Chargeuses",
+          "rows": 5,
+          "columns_count": 2,
+          "columns": [
+            {
+              "name": "Chargeuse",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Tonnage",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_0_Liste_engins.xlsx",
+      "file_key": "Benene_0_Liste_engins",
+      "description": "Inventaire des engins et équipements miniers.",
+      "role": "Inventaire global des engins et équipements du site.",
+      "usage": [
+        "Référentiel commun entre production, carburant et transport"
+      ],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_0_Liste_engins.xlsx › Benene_0_Liste_engins",
+          "rows": 88,
+          "columns_count": 3,
+          "columns": [
+            {
+              "name": "Type Engin",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Code / Nom engin / Immatriculation",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Propriétaire",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_0_Objectifs.xlsx",
+      "file_key": "Benene_0_Objectifs",
+      "description": "Objectifs de production ou de performance.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_0_Objectifs.xlsx › Benene_0_Objectifs",
+          "rows": 780,
+          "columns_count": 3,
+          "columns": [
+            {
+              "name": "Excavation Prévue (T)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Descente Prévue (T)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_0_Personnel.xlsx",
+      "file_key": "Benene_0_Personnel",
+      "description": "Informations sur le personnel et leurs rôles.",
+      "role": "Référentiel des employés.",
+      "usage": [
+        "Gestion RH",
+        "Affectation des shifts"
+      ],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_0_Personnel.xlsx › Benene_0_Personnel",
+          "rows": 41,
+          "columns_count": 3,
+          "columns": [
+            {
+              "name": "ID",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Métier",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Nom",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_0_Stocks.xlsx",
+      "file_key": "Benene_0_Stocks",
+      "description": "Données de stock et de qualité.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_0_Stocks.xlsx › Benene_0_Stocks",
+          "rows": 136,
+          "columns_count": 3,
+          "columns": [
+            {
+              "name": "Stock",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Qualité à priori",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "commentaire",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_0_Valeurs_initiales.xlsx",
+      "file_key": "Benene_0_Valeurs_initiales",
+      "description": "Valeurs initiales associées aux stocks.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_0_Valeurs_initiales.xlsx › Benene_0_Valeurs_initiales",
+          "rows": 27,
+          "columns_count": 5,
+          "columns": [
+            {
+              "name": "Type",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Stock",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Valeur",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Commentaire",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_0_Zone_excavation.xlsx",
+      "file_key": "Benene_0_Zone_excavation",
+      "description": "Zones d'excavation répertoriées.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_0_Zone_excavation.xlsx › Benene_0_Zone_excavation",
+          "rows": 22,
+          "columns_count": 1,
+          "columns": [
+            {
+              "name": "Zone d'excavation",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_1_Excavation.xlsx",
+      "file_key": "Benene_1_Excavation",
+      "description": "Données d'excavation et de tonnage.",
+      "role": "Suivi de la production d'excavation (volume, tonnage, zones, équipements).",
+      "usage": [
+        "KPI production journalière",
+        "Comparaison objectif vs réalisé",
+        "Analyse performance équipements"
+      ],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_1_Excavation.xlsx › Benene_1_Excavation",
+          "rows": 1107,
+          "columns_count": 14,
+          "columns": [
+            {
+              "name": "Shift",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Zone d'excavation",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Volume excavé (m3)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Tonnage QD",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Tonnage MQ",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Linéaire jour (m)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Profondeur moyenne (m)",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Ecart (cm)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Volume excavé tenant compte l'écart(m3)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Tonnage excavé estimé (T)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Tonnage se referant à l'ecart  (T)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Tonnage BQ",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Equipement",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": true,
+          "powerbi_calendar_hint": true,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_1_Journal.xlsx",
+      "file_key": "Benene_1_Journal",
+      "description": "Journal d'activité ou de suivi.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_1_Journal.xlsx › Benene_1_Journal",
+          "rows": 2389,
+          "columns_count": 7,
+          "columns": [
+            {
+              "name": "Axe",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Objet",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Equipement",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Commentaire",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_1_Shifts_horaires.xlsx",
+      "file_key": "Benene_1_Shifts_horaires",
+      "description": "Données horaires des shifts.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_1_Shifts_horaires.xlsx › Benene_1_Shifts_horaires",
+          "rows": 1163,
+          "columns_count": 13,
+          "columns": [
+            {
+              "name": "Shift",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Heure tambour total",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Heure moteur total",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Equipement",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ incohérences de types détectées",
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_1_Shifts_personnel.xlsx",
+      "file_key": "Benene_1_Shifts_personnel",
+      "description": "Informations sur le personnel et leurs rôles.",
+      "role": "Affectation du personnel par shift.",
+      "usage": [
+        "Planification des équipes",
+        "Suivi des heures travaillées"
+      ],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_1_Shifts_personnel.xlsx › Benene_1_Shifts_personnel",
+          "rows": 6828,
+          "columns_count": 4,
+          "columns": [
+            {
+              "name": "Shift",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Opérateur",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_2_Qualite_echantillons.xlsx",
+      "file_key": "Benene_2_Qualite_echantillons",
+      "description": "Qualité des échantillons miniers.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_2_Qualite_echantillons.xlsx › Benene_2_Qualite_echantillons",
+          "rows": 1182,
+          "columns_count": 15,
+          "columns": [
+            {
+              "name": "ID ECH",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "POIDS",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Tonnage/Ech",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "ZONE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "STOCK/LOT PLATEAU",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "STOCK DSO",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Laboratoire",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Al2O3",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Fe2O3",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "SiO2",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Observations",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_2_Qualite_navires.xlsx",
+      "file_key": "Benene_2_Qualite_navires",
+      "description": "Qualité des navires.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_2_Qualite_navires.xlsx › Benene_2_Qualite_navires",
+          "rows": 37,
+          "columns_count": 8,
+          "columns": [
+            {
+              "name": "Navire",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Al2O3 (SGS AFS)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "SiO2 (SGS AFS)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Fe2O3 (SGS AFS)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Al2O3 (SGS CHINE)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "SiO2 (SGS CHINE)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Fe2O3 (SGS CHINE)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_3_Regul_Qté_stock.xlsx",
+      "file_key": "Benene_3_Regul_Qté_stock",
+      "description": "Régulation des quantités de stock.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_3_Regul_Qté_stock.xlsx › Benene_3_Regul_Qté_stock",
+          "rows": 233,
+          "columns_count": 5,
+          "columns": [
+            {
+              "name": "Stock",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Valeur (T)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Commentaire",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Source",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Benene_3_Regul_Qualité_stock.xlsx",
+      "file_key": "Benene_3_Regul_Qualité_stock",
+      "description": "Données issues du fichier `benene 3 regul qualité stock`.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Benene_3_Regul_Qualité_stock.xlsx › Benene_3_Regul_Qualité_stock",
+          "rows": 9,
+          "columns_count": 3,
+          "columns": [
+            {
+              "name": "Stock",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Qualité",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Budget.xlsx",
+      "file_key": "Budget",
+      "description": "Données de budget de production et de descente.",
+      "role": "Prévision de production et descente mensuelle.",
+      "usage": [
+        "Planification annuelle",
+        "Comparaison réel vs objectif"
+      ],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "Budget.xlsx › Target",
+          "rows": 12,
+          "columns_count": 4,
+          "columns": [
+            {
+              "name": "Année",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Mois",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Tonnage à produire",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Tonnage à descendre",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": true,
+          "powerbi_calendar_hint": true,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "CARBURANT.xlsx",
+      "file_key": "CARBURANT",
+      "description": "Données de consommation de carburant et activités.",
+      "role": "Suivi de la consommation de carburant par engin, activité et cuves.",
+      "usage": [
+        "Analyse coût opérationnel",
+        "Calcul productivité carburant",
+        "Suivi consommation par machine"
+      ],
+      "sheet_count": 5,
+      "sheets": [
+        {
+          "name": "CARBURANT.xlsx › LISTE ENGINS MINE",
+          "rows": 88,
+          "columns_count": 13,
+          "columns": [
+            {
+              "name": "ID",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Type Engin",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Code / Nom engin / Immatriculation",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Propriétaire",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Activité",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Consommation moyenne (L/h)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Jauge Arrivée (01/07/2023)",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Kilométrage (01/07/2023)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Capacité réservoir",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Objectif heures travail / jour",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Tarif",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Centre attitré",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": true,
+          "powerbi_calendar_hint": true,
+          "issues": [
+            "⚠️ incohérences de types détectées",
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "CARBURANT.xlsx › CITERN IVEQI",
+          "rows": 4775,
+          "columns_count": 6,
+          "columns": [
+            {
+              "name": "Engin/Equipement",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Depotage",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Quantité Servie (L)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Quantité Restante (L)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Observation",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "CARBURANT.xlsx › ACTIVITES",
+          "rows": 14272,
+          "columns_count": 11,
+          "columns": [
+            {
+              "name": "MACHINE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "OPERATEUR PRINCIPAL",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "heure début",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "heure fin",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "heure",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "km début",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "km fin",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Vit. moy (km/h)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Libellé activité",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Activités",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ incohérences de types détectées",
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "CARBURANT.xlsx › CUVE PETRO-IVOIRE",
+          "rows": 6717,
+          "columns_count": 8,
+          "columns": [
+            {
+              "name": "Engin/Equipement",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Quantité Initiale Théorique (L)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Depotage",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Quantité Servie (L)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Quantité Restante (L)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Jauge",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Observation",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "CARBURANT.xlsx › LIBELLE ACTIVITE",
+          "rows": 21,
+          "columns_count": 1,
+          "columns": [
+            {
+              "name": "Libellé activité",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "DESCENTE MINERAI.xlsx",
+      "file_key": "DESCENTE MINERAI",
+      "description": "Descente journalière du minerai.",
+      "role": "Suivi du transport de minerai du site vers zones de stockage ou livraison.",
+      "usage": [
+        "KPI logistique",
+        "Suivi tonnage transporté",
+        "Analyse performance transporteurs"
+      ],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "DESCENTE MINERAI.xlsx › ALL",
+          "rows": 8228,
+          "columns_count": 13,
+          "columns": [
+            {
+              "name": "Site",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Responsable site",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Produit",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Code / Nom engin / Immatriculation",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "SOCIETE DE TRANSPORT",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "NOMBRE VOYAGE",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "TONNAGE / VOYAGE",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "QUALITE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "QUANTITE JOURNALIERE DESCENDUE (T)",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "ZONE DE STOCKAGE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "OBSERVATION",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "N°CAMION",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": true,
+          "powerbi_calendar_hint": true,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "PLAN D'ACTIONS DU PGES.xlsx",
+      "file_key": "PLAN D'ACTIONS DU PGES",
+      "description": "Plan d'actions du PGES.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 3,
+      "sheets": [
+        {
+          "name": "PLAN D'ACTIONS DU PGES.xlsx › LEB",
+          "rows": 54,
+          "columns_count": 9,
+          "columns": [
+            {
+              "name": "N°",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Actions PGES / Recommandation ANDE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Sous actions",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Livrable",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Responsable",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Date de réalisation sous-action",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Échéance",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Niveau d'avancement",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Commentaires",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": true,
+          "powerbi_calendar_hint": true,
+          "issues": [
+            "⚠️ incohérences de types détectées",
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "PLAN D'ACTIONS DU PGES.xlsx › Feuil1",
+          "rows": 25,
+          "columns_count": 1,
+          "columns": [
+            {
+              "name": "Statut de l'action",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "PLAN D'ACTIONS DU PGES.xlsx › EDIT",
+          "rows": 54,
+          "columns_count": 10,
+          "columns": [
+            {
+              "name": "N°",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Actions PGES / Recommandation ANDE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Sous actions",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Livrable",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Responsable",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Date de réalisation sous-action",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Échéance",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Niveau d'avancement",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Commentaires",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": true,
+          "powerbi_calendar_hint": true,
+          "issues": [
+            "⚠️ incohérences de types détectées",
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "PRODUCTIVITE PORT.xlsx",
+      "file_key": "PRODUCTIVITE PORT",
+      "description": "Productivité portuaire et suivi des voyages.",
+      "role": null,
+      "usage": [],
+      "sheet_count": 6,
+      "sheets": [
+        {
+          "name": "PRODUCTIVITE PORT.xlsx › LOADING RATE",
+          "rows": 205,
+          "columns_count": 6,
+          "columns": [
+            {
+              "name": "QUANTITE CHARGEE",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "LIEU DE CHARGEMENT",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "ORIGINE STOCK",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "NAVIRE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "COMMENTAIRE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "PRODUCTIVITE PORT.xlsx › VOYAGE NAVIRE",
+          "rows": 45,
+          "columns_count": 5,
+          "columns": [
+            {
+              "name": "NOM DU NAVIRE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "OBJECTIF QUANTITE",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "NOMBRE DE JOURS OPERATIONS PREVUS",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": true,
+          "powerbi_calendar_hint": true,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "PRODUCTIVITE PORT.xlsx › LISTE NAVIRE",
+          "rows": 44,
+          "columns_count": 12,
+          "columns": [
+            {
+              "name": "NAME",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 1",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 2",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 3",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 4",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 5",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 6",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 7",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 8",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 9",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 10",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "INFO 11",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "PRODUCTIVITE PORT.xlsx › REGUL",
+          "rows": 4,
+          "columns_count": 4,
+          "columns": [
+            {
+              "name": "STOCK",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "VALEUR",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "COMMENTAIRE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "PRODUCTIVITE PORT.xlsx › OBJECTIF JR",
+          "rows": 731,
+          "columns_count": 2,
+          "columns": [
+            {
+              "name": "Tonnage prévue (Kg)",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "PRODUCTIVITE PORT.xlsx › INFOS STOCK",
+          "rows": 2,
+          "columns_count": 1,
+          "columns": [
+            {
+              "name": "STOCKS",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "Suivi des actions.xlsx",
+      "file_key": "Suivi des actions",
+      "description": "Suivi des obligations et actions.",
+      "role": "Suivi des obligations et actions.",
+      "usage": [],
+      "sheet_count": 2,
+      "sheets": [
+        {
+          "name": "Suivi des actions.xlsx › Obligations",
+          "rows": 40,
+          "columns_count": 14,
+          "columns": [
+            {
+              "name": "Type",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Titre des obligations",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Description",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Direction / Département",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Statuts",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Priorité",
+              "type": "int64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Périodicité",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Destinataire",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Responsable R2M",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "% Avancement",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Observations",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        },
+        {
+          "name": "Suivi des actions.xlsx › Listes de choix",
+          "rows": 20,
+          "columns_count": 7,
+          "columns": [
+            {
+              "name": "Type",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Catégories",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "PRIORITE",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "PERIODICITE",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "RESPONSABLE R2M",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "% Avancement",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "Statuts taches",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    },
+    {
+      "file_name": "TRANSPORT MINERAI PAA.xlsx",
+      "file_key": "TRANSPORT MINERAI PAA",
+      "description": "Transport de minerai PAA.",
+      "role": "Suivi détaillé du transport vers PAA (Port Autonome / point de livraison).",
+      "usage": [
+        "Logistique export",
+        "Contrôle poids et conformité transport"
+      ],
+      "sheet_count": 1,
+      "sheets": [
+        {
+          "name": "TRANSPORT MINERAI PAA.xlsx › TRANSPORT MINERAI PAA",
+          "rows": 48074,
+          "columns_count": 18,
+          "columns": [
+            {
+              "name": "HEURE DEPART",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "N° CAMION",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "SOCIETE DE TRANSPORT",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "N° STOCK PRELEVEMENT",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "N° BL",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "P1 TARE (Kg)",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "POIDS CHARGEE P2 (Kg)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "QUANTITE TRANSPORTEE (Kg)",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "N° TICKET PAA",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "P1 TARE (Kg) PAA",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "POIDS CHARGEE P2 (Kg) PAA",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "QUANTITE TRANSPORTEE PAA (Kg)",
+              "type": "float64",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "HEURE ARRIVEE PAA",
+              "type": "object",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "DESTINATION",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "OBSERVATIONS",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            },
+            {
+              "name": "TRANSPORT ANNULE?",
+              "type": "str",
+              "missing_count": 0,
+              "missing_pct": 0.0,
+              "missing_level": "OK"
+            }
+          ],
+          "has_date_columns": false,
+          "powerbi_calendar_hint": false,
+          "issues": [
+            "⚠️ incohérences de types détectées",
+            "⚠️ doublons détectés"
+          ]
+        }
+      ]
+    }
+  ]
+}

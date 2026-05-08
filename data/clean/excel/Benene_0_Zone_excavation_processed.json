@@ -1,0 +1,80 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Benene_0_Zone_excavation": {
+      "columns": [
+        "Zone d'excavation"
+      ],
+      "rows": 22,
+      "data": [
+        {
+          "Zone d'excavation": "Zone 1"
+        },
+        {
+          "Zone d'excavation": "Zone 2a"
+        },
+        {
+          "Zone d'excavation": "Zone_1_Centre"
+        },
+        {
+          "Zone d'excavation": "Zone_1_Flanc"
+        },
+        {
+          "Zone d'excavation": "Zone_1_Nord"
+        },
+        {
+          "Zone d'excavation": "Zone_1_Sud"
+        },
+        {
+          "Zone d'excavation": "Zone_1_Sud_Flanc"
+        },
+        {
+          "Zone d'excavation": "Zone_centre"
+        },
+        {
+          "Zone d'excavation": "Zone_centre_Nord_Sud"
+        },
+        {
+          "Zone d'excavation": "Zone_2_mur_zone_1_2"
+        },
+        {
+          "Zone d'excavation": "Zone_2_minerai_teneur_connu"
+        },
+        {
+          "Zone d'excavation": "Zone_1_Centre_Sud"
+        },
+        {
+          "Zone d'excavation": "Zone_1_Centre_Nord"
+        },
+        {
+          "Zone d'excavation": "Zone_1_Centre_Nord_Sud"
+        },
+        {
+          "Zone d'excavation": "Zone_1_Extreme _Sud"
+        },
+        {
+          "Zone d'excavation": "Zone 1/Zone 2a"
+        },
+        {
+          "Zone d'excavation": "Zone 2b"
+        },
+        {
+          "Zone d'excavation": "Zone 2c"
+        },
+        {
+          "Zone d'excavation": "Zone 3"
+        },
+        {
+          "Zone d'excavation": "zone 2A/ zone 2B"
+        },
+        {
+          "Zone d'excavation": "Zone_1_mur"
+        },
+        {
+          "Zone d'excavation": "Zone_1_mur/Zone 2a"
+        }
+      ]
+    }
+  },
+  "filename": "Benene_0_Zone_excavation.xlsx"
+}

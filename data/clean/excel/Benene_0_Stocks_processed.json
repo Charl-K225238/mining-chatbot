@@ -1,0 +1,516 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Benene_0_Stocks": {
+      "columns": [
+        "Stock",
+        "Qualité à priori",
+        "commentaire"
+      ],
+      "rows": 136,
+      "data": [
+        {
+          "Stock": "1",
+          "Qualité à priori": "MQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "10",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "11",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "12",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "13",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "14",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "15",
+          "Qualité à priori": "MQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "16",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "17",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "18",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "19",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "2",
+          "Qualité à priori": "MQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "20",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "21",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "22",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "23",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "24",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "25",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "26",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "27",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "28",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "29",
+          "Qualité à priori": "QD",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "3",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "30",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "31",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "32",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "33",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "34",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "35",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "36",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "37",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "38",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "39",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "4",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "40",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "41",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "42",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "43",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "44",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "45",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "46",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "47",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "48",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "49",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "5",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "50",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "51",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "54",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "6",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "7A",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "7B",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "8",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "9",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "Bas Colline - BQ",
+          "Qualité à priori": "BQ",
+          "commentaire": "Créé pour la regulation des écarts globaux bas colline"
+        },
+        {
+          "Stock": "Bas Colline - MQ",
+          "Qualité à priori": "MQ",
+          "commentaire": "Créé pour la regulation des écarts globaux bas colline"
+        },
+        {
+          "Stock": "Bas Colline - QD",
+          "Qualité à priori": "QD",
+          "commentaire": "Créé pour la regulation des écarts globaux bas colline"
+        },
+        {
+          "Stock": "Plateau - BQ",
+          "Qualité à priori": "BQ",
+          "commentaire": "Stock de bonne qualité au niveau du plateau"
+        },
+        {
+          "Stock": "Plateau - MQ",
+          "Qualité à priori": "MQ",
+          "commentaire": "Stock de mauvaise qualité au niveau du plateau"
+        },
+        {
+          "Stock": "Plateau - QD",
+          "Qualité à priori": "QD",
+          "commentaire": "Stock de qualité douteuse au plateau"
+        },
+        {
+          "Stock": "52",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "53",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "55",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "56",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "57",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "58",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "59",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "60",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "61",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "62",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "63",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "64",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "65",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "66",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "67",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "68",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "69",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "70",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "71",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "72",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "73",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "74",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "75",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "76",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "77",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "78",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "79",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "80",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "81",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "82",
+          "Qualité à priori": "QD",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "83",
+          "Qualité à priori": "QD",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "84",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "85",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "86",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "87",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "88",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "89",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "90",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "91",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "92",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        },
+        {
+          "Stock": "93",
+          "Qualité à priori": "BQ",
+          "commentaire": NaN
+        }
+      ]
+    }
+  },
+  "filename": "Benene_0_Stocks.xlsx"
+}

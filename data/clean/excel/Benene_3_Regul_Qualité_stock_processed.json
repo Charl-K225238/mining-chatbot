@@ -1,0 +1,13 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Benene_3_Regul_Qualité_stock": {
+      "columns": [
+        "Date",
+        "Stock",
+        "Qualité"
+      ],
+      "rows": 9,
+      "data": [
+        {
+          "Date": 

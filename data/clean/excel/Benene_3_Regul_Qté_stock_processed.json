@@ -1,0 +1,15 @@
+{
+  "type": "excel",
+  "sheets": {
+    "Benene_3_Regul_Qté_stock": {
+      "columns": [
+        "Date",
+        "Stock",
+        "Valeur (T)",
+        "Commentaire",
+        "Source"
+      ],
+      "rows": 233,
+      "data": [
+        {
+          "Date": 
