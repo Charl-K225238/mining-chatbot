@@ -8,6 +8,7 @@ __pycache__/
 # ==========================================
 # Virtual Environment
 # ==========================================
+.venv/
 venv/
 .env/
 
@@ -32,12 +33,27 @@ models/
 # ==========================================
 *.xlsx
 *.csv
-*.parquet
+# *.parquet — inclus dans le repo pour Streamlit Cloud (repo privé)
+data/mining.duckdb
+data/bm25_index.pkl
+data/clean/
+
+# ==========================================
+# Claude Code (config locale)
+# ==========================================
+.claude/
 
 # ==========================================
 # Logs
 # ==========================================
 *.log
+
+# ==========================================
+# Fichiers de diagnostic / debug (scripts ponctuels)
+# ==========================================
+diagnostic_*.py
+diagnostic_*.txt
+test_routing.py
 
 # ==========================================
 # OS Files
