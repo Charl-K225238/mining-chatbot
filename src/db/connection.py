@@ -63,12 +63,14 @@ def _register_parquet_tables(con: duckdb.DuckDBPyConnection) -> None:
 
     for path in parquet_files:
         table_name = path.stem
-        # Double-quote le nom de table pour éviter l'injection SQL,
-        # paramètre le chemin pour éviter l'injection dans la valeur littérale.
+        # read_parquet() est une fonction de table — DuckDB n'accepte pas de
+        # paramètre ? pour son argument. Le chemin vient de notre propre répertoire
+        # PARQUET_DIR (pas d'une entrée utilisateur), donc le string formatting est sûr.
+        # On échappe les apostrophes par précaution défensive.
+        path_sql = path.as_posix().replace("'", "''")
         con.execute(
             f'CREATE OR REPLACE VIEW "{table_name}" AS '
-            f"SELECT * FROM read_parquet(?)",
-            [path.as_posix()],
+            f"SELECT * FROM read_parquet('{path_sql}')"
         )
         logger.debug("Vue créée : %s", table_name)
 
