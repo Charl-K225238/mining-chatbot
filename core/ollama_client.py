@@ -66,11 +66,15 @@ _NUM_PREDICT: dict[str, int] = {
 logger = logging.getLogger(__name__)
 
 # ── Environnement ──────────────────────────────────────────────────────────────
-_IS_WINDOWS = platform.system() == "Windows"
+IS_WINDOWS = platform.system() == "Windows"
 
-# Streamlit Cloud : HOME=/home/appuser, pas de service systemd, pas d'Ollama local.
+# Streamlit Cloud : STREAMLIT_SHARING_MODE=streamlit (officiel) ou HOME=/home/appuser
+# (heuristique image Docker). Les deux sont testés pour couvrir les futures évolutions.
 # Sur Linux local l'utilisateur peut avoir Ollama installé dans le PATH.
-_IS_STREAMLIT_CLOUD = os.environ.get("HOME") == "/home/appuser"
+IS_STREAMLIT_CLOUD = (
+    os.environ.get("STREAMLIT_SHARING_MODE") == "streamlit"
+    or os.environ.get("HOME") == "/home/appuser"
+)
 
 # ── Codes d'erreur internes (jamais exposés bruts à l'utilisateur) ───────────
 _NOT_INSTALLED  = "__NOT_INSTALLED__"
@@ -127,7 +131,7 @@ def trouver_ollama_exe() -> str | None:
     - Sur Windows uniquement : vérifie aussi les chemins d'installation standards.
     Retourne le chemin complet ou None si introuvable.
     """
-    if _IS_STREAMLIT_CLOUD:
+    if IS_STREAMLIT_CLOUD:
         # Streamlit Cloud n'a pas Ollama — accès via OLLAMA_HOST uniquement.
         return None
 
@@ -137,7 +141,7 @@ def trouver_ollama_exe() -> str | None:
         return found
 
     # 2. Emplacements Windows standards (non dans le PATH après installation)
-    if _IS_WINDOWS:
+    if IS_WINDOWS:
         for path_tpl in OLLAMA_EXE_PATHS:
             expanded = os.path.expandvars(path_tpl)
             if Path(expanded).exists():
@@ -185,7 +189,7 @@ def demarrer_ollama() -> bool:
             "stdout": subprocess.DEVNULL,
             "stderr": subprocess.DEVNULL,
         }
-        if _IS_WINDOWS:
+        if IS_WINDOWS:
             kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW  # type: ignore[attr-defined]
 
         subprocess.Popen([exe, "serve"], **kwargs)
@@ -464,7 +468,7 @@ def afficher_erreur_ollama(code: str) -> str:
     Les messages distinguent le contexte local (Windows) et cloud (Linux).
     """
     if code == _NOT_INSTALLED:
-        if _IS_STREAMLIT_CLOUD:
+        if IS_STREAMLIT_CLOUD:
             return (
                 "**Ollama n'est pas accessible depuis ce serveur cloud.**\n\n"
                 "Les modes LLM nécessitent une instance Ollama exposée sur Internet. "
@@ -473,7 +477,7 @@ def afficher_erreur_ollama(code: str) -> str:
                 "**⚙️ Paramètres** → *Guide de connexion cloud* pour les instructions.\n\n"
                 "_⚡ Analytique répond instantanément sans Ollama._"
             )
-        elif _IS_WINDOWS:
+        elif IS_WINDOWS:
             return (
                 "**Ollama n'est pas installé sur ce PC.**\n\n"
                 "**Solution :** téléchargez Ollama depuis *ollama.com* "
@@ -548,14 +552,14 @@ def initialiser_ollama(modele: str | None = None) -> dict:
         "modeles":       modeles,
         "modele_actif":  actif,
         "exe":           trouver_ollama_exe(),
-        "is_windows":    _IS_WINDOWS,
-        "is_cloud":      _IS_STREAMLIT_CLOUD,
+        "is_windows":    IS_WINDOWS,
+        "is_cloud":      IS_STREAMLIT_CLOUD,
         "ollama_url":    url,
         "is_remote":     is_remote_ollama(),
     }
     logger.info(
         "Ollama init — disponible=%s modele=%s url=%s windows=%s cloud=%s",
-        disponible, actif, url, _IS_WINDOWS, _IS_STREAMLIT_CLOUD,
+        disponible, actif, url, IS_WINDOWS, IS_STREAMLIT_CLOUD,
     )
     return status
 

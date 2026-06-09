@@ -122,7 +122,7 @@ else:
                     )
 
                 _up = st.file_uploader(
-                    f"Choisir `{_source_file or 'fichier Excel (.xlsx)'}`",
+                    f"Choisir {_source_file or 'fichier Excel (.xlsx)'}",
                     type=["xlsx", "xls"],
                     key=f"up_tbl_{_replace_target}",
                 )

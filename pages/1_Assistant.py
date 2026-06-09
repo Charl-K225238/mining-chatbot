@@ -455,9 +455,14 @@ def _afficher_smart_clarification(question: str, key_suffix: str = "") -> tuple[
         return False, False
 
     # ── Corrections évidentes : auto-apply silencieux, aucun affichage ────────
-    # Spelling (1 ou plusieurs mots) et inversion de préposition → needs_confirm=False
-    # On réécrit la question sans montrer d'UI et on relance le rendu.
+    # Spelling (1 ou plusieurs mots) et inversion de préposition → needs_confirm=False.
+    # On remplace le dernier message utilisateur (déjà ajouté en session) par la version
+    # corrigée et on stocke l'original pour l'afficher en caption dans l'historique.
     if result.has_change and not result.needs_confirm:
+        msgs = st.session_state.messages
+        if msgs and msgs[-1]["role"] == "user" and msgs[-1]["content"] == question:
+            msgs[-1]["content"]        = result.reformulated_q
+            msgs[-1]["corrected_from"] = question
         st.session_state.pending_question = result.reformulated_q
         st.rerun()
 
@@ -769,6 +774,8 @@ for idx, msg in enumerate(st.session_state.messages):
         else:
             # Message utilisateur + bouton relancer
             st.markdown(msg["content"])
+            if msg.get("corrected_from"):
+                st.caption(f"✏️ *Corrigé automatiquement depuis : « {msg['corrected_from']} »*")
             _rc1, _rc2 = st.columns([2, 10])
             with _rc1:
                 if st.button("↩ Relancer", key=f"rerun_q_{idx}",
@@ -847,6 +854,9 @@ if prompt:
 
     with st.chat_message("user"):
         st.markdown(prompt)
+        _current_msg = st.session_state.messages[-1] if st.session_state.messages else {}
+        if _current_msg.get("corrected_from"):
+            st.caption(f"✏️ *Corrigé automatiquement depuis : « {_current_msg['corrected_from']} »*")
         _rrun_c1, _ = st.columns([2, 10])
         with _rrun_c1:
             if st.button("↩ Relancer", key="rerun_current",

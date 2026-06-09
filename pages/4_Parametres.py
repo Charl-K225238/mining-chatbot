@@ -16,7 +16,7 @@ from core.ollama_client import (
     is_available, active_model_name,
     lister_modeles_disponibles, assurer_modele_disponible,
     ollama_est_disponible, trouver_ollama_exe, is_remote_ollama,
-    _IS_WINDOWS, _IS_STREAMLIT_CLOUD,
+    IS_WINDOWS, IS_STREAMLIT_CLOUD,
 )
 from src.db.connection import close as close_db
 from src.engine.query_router import rebuild_index
@@ -43,13 +43,13 @@ st.markdown("## ⚙️ Paramètres")
 # ── Redirection depuis l'Assistant (flag de session) ──────────────────────────
 _nav_highlight = st.session_state.pop("params_highlight", None)
 if _nav_highlight == "install":
-    if _IS_STREAMLIT_CLOUD:
+    if IS_STREAMLIT_CLOUD:
         st.info(
             "**Ollama n'est pas accessible depuis ce serveur cloud.** "
             "Suivez le guide ci-dessous pour exposer votre Ollama local et configurer OLLAMA_HOST.",
             icon="☁️",
         )
-    elif _IS_WINDOWS:
+    elif IS_WINDOWS:
         st.info(
             "**Ollama n'est pas encore installé.** "
             "Le guide ci-dessous vous accompagne en 4 étapes (5 min, gratuit).",
@@ -93,7 +93,7 @@ with st.expander(
     )
     st.markdown("---")
 
-    if _IS_STREAMLIT_CLOUD:
+    if IS_STREAMLIT_CLOUD:
         # ── Guide Streamlit Cloud ──────────────────────────────────────────────
         st.markdown("### 🌐 Guide — Déploiement Streamlit Cloud")
         st.markdown(
@@ -146,7 +146,7 @@ with st.expander(
         )
         st.markdown("---")
 
-    elif _IS_WINDOWS:
+    elif IS_WINDOWS:
         # ── Guide Windows local ────────────────────────────────────────────────
         st.markdown("### 🪟 Guide — Installation locale Windows")
         st.markdown(
@@ -408,7 +408,7 @@ with col_m1:
             "Ollama installé — démarre automatiquement à la prochaine question LLM.",
             icon="🤖",
         )
-    elif _IS_STREAMLIT_CLOUD:
+    elif IS_STREAMLIT_CLOUD:
         st.error(
             "Ollama **non accessible** depuis le serveur cloud. "
             "Configurez **OLLAMA_HOST** dans les Secrets Streamlit pour activer les modes LLM. "
