@@ -15,7 +15,8 @@ from core.data_loader import get_db, get_index, load_css
 from core.ollama_client import (
     is_available, active_model_name,
     lister_modeles_disponibles, assurer_modele_disponible,
-    ollama_est_disponible, trouver_ollama_exe,
+    ollama_est_disponible, trouver_ollama_exe, is_remote_ollama,
+    _IS_WINDOWS, _IS_STREAMLIT_CLOUD,
 )
 from src.db.connection import close as close_db
 from src.engine.query_router import rebuild_index
@@ -42,11 +43,18 @@ st.markdown("## ⚙️ Paramètres")
 # ── Redirection depuis l'Assistant (flag de session) ──────────────────────────
 _nav_highlight = st.session_state.pop("params_highlight", None)
 if _nav_highlight == "install":
-    st.info(
-        "**Ollama n'est pas encore installé.** "
-        "Le guide ci-dessous vous accompagne en 4 étapes (5 min, gratuit).",
-        icon="🚀",
-    )
+    if _IS_WINDOWS:
+        st.info(
+            "**Ollama n'est pas encore installé.** "
+            "Le guide ci-dessous vous accompagne en 4 étapes (5 min, gratuit).",
+            icon="🚀",
+        )
+    else:
+        st.info(
+            "**Ollama n'est pas accessible depuis ce serveur cloud.** "
+            "Suivez le guide ci-dessous pour exposer votre Ollama local et configurer OLLAMA_HOST.",
+            icon="🌐",
+        )
 elif _nav_highlight == "model":
     st.info(
         "**Aucun modèle téléchargé.** "
@@ -69,97 +77,188 @@ _ollama_pret = _disponible and bool(_modeles)
 
 # ── Guide de démarrage ─────────────────────────────────────────────────────────
 with st.expander(
-    "🚀 Démarrage — Installer Ollama et choisir un modèle",
+    "🚀 Démarrage — Configurer Ollama",
     expanded=(not _ollama_pret or _nav_highlight == "install"),
 ):
-    st.markdown(
-        "Miny fonctionne avec **Ollama**, un moteur IA gratuit qui tourne entièrement "
-        "sur votre ordinateur — aucun abonnement, aucune donnée envoyée sur Internet."
+    st.info(
+        "**⚡ Mode Analytique** fonctionne sans Ollama — réponses instantanées depuis DuckDB. "
+        "Les modes 🔢 Calcul · 🏭 Expertise · 💬 Général · 🤖 Documents nécessitent Ollama.",
+        icon="💡",
     )
-
     st.markdown("---")
 
-    # Étape 1
-    st.markdown("#### Étape 1 — Installer Ollama (gratuit, 5 min)")
-    c_dl, c_info = st.columns([2, 3])
-    with c_dl:
+    if _IS_STREAMLIT_CLOUD:
+        # ── Guide Streamlit Cloud ──────────────────────────────────────────────
+        st.markdown("### 🌐 Guide — Déploiement Streamlit Cloud")
         st.markdown(
-            "**1.** Rendez-vous sur **[ollama.com](https://ollama.com)**\n\n"
-            "**2.** Cliquez **Download for Windows**\n\n"
-            "**3.** Lancez l'installateur et suivez les étapes\n\n"
-            "**4.** Ollama démarre automatiquement en arrière-plan — "
-            "une icône apparaît dans la barre des tâches"
-        )
-    with c_info:
-        st.info(
-            "**Ollama tourne en local** — vos données ne quittent jamais votre PC.\n\n"
-            "Après installation, revenez ici et passez à l'étape 2.",
-            icon="🔒",
+            "Miny tourne sur un serveur Linux géré par Streamlit. "
+            "Ollama **ne peut pas s'y installer** — il doit tourner sur votre machine "
+            "et être accessible via une URL publique."
         )
 
-    st.markdown("---")
+        st.markdown("---")
+        st.markdown("#### Étape 1 — Installer Ollama sur votre PC Windows/Mac/Linux")
+        st.markdown(
+            "- **Windows** : téléchargez l'installateur → **[ollama.com](https://ollama.com)**\n"
+            "- **Mac/Linux** : `curl -fsSL https://ollama.com/install.sh | sh`\n\n"
+            "Puis téléchargez un modèle :"
+        )
+        st.code("ollama pull qwen2.5:3b", language="bash")
 
-    # Étape 2
-    st.markdown("#### Étape 2 — Choisir votre modèle selon votre RAM")
-    st.caption(
-        "Pour vérifier votre RAM : **Ctrl+Alt+Supr** → Gestionnaire des tâches "
-        "→ Performances → Mémoire"
-    )
+        st.markdown("---")
+        st.markdown("#### Étape 2 — Exposer Ollama via ngrok (option gratuite)")
+        _c1, _c2 = st.columns(2)
+        with _c1:
+            st.markdown(
+                "**1.** Créez un compte gratuit → **[ngrok.com](https://ngrok.com)**\n\n"
+                "**2.** Installez ngrok et authentifiez-le\n\n"
+                "**3.** Lancez le tunnel :"
+            )
+            st.code("ngrok http 11434 --host-header=localhost", language="bash")
+            st.markdown("**4.** Copiez l'URL https fournie par ngrok")
+        with _c2:
+            st.info(
+                "**Alternatives à ngrok :**\n"
+                "- Cloudflare Tunnel (gratuit, stable)\n"
+                "- Tailscale Funnel\n"
+                "- VPS avec port 11434 ouvert",
+                icon="🔗",
+            )
 
-    st.markdown("""
-| RAM disponible | Modèle recommandé | Taille | Commande à copier |
-|---|---|---|---|
-| **< 4 Go** | `phi3:mini` | ~2,2 Go | `ollama pull phi3:mini` |
-| **4 – 8 Go** | `qwen2.5:3b` *(défaut Miny)* | ~2,0 Go | `ollama pull qwen2.5:3b` |
-| **8 – 16 Go** | `qwen2.5:7b` | ~4,7 Go | `ollama pull qwen2.5:7b` |
-| **> 16 Go** | `qwen2.5:14b` | ~8,7 Go | `ollama pull qwen2.5:14b` |
+        st.markdown("---")
+        st.markdown("#### Étape 3 — Configurer OLLAMA_HOST dans Streamlit Cloud")
+        st.markdown(
+            "**1.** Allez sur **[share.streamlit.io](https://share.streamlit.io)**\n\n"
+            "**2.** Votre app → menu **⋯** → **Settings** → **Secrets**\n\n"
+            "**3.** Ajoutez :"
+        )
+        st.code('OLLAMA_HOST = "https://abc123.ngrok-free.app"', language="toml")
+        st.caption("Remplacez l'URL par celle de votre tunnel.")
+        st.markdown(
+            "**4.** Cliquez **Save** — l'app redémarre automatiquement\n\n"
+            "**5.** Revenez ici et cliquez **🔍 Vérifier Ollama** ci-dessous"
+        )
+        st.markdown("---")
 
-> **Conseil** : si vous avez 8 Go, téléchargez les deux premiers (`qwen2.5:3b` + `phi3:mini`).
-> Miny basculera automatiquement sur `phi3:mini` si `qwen2.5:3b` est trop lent.
+    elif _IS_WINDOWS:
+        # ── Guide Windows local ────────────────────────────────────────────────
+        st.markdown("### 🪟 Guide — Installation locale Windows")
+        st.markdown(
+            "Ollama est un moteur IA gratuit qui tourne **entièrement sur votre PC** "
+            "— aucun abonnement, aucune donnée envoyée sur Internet."
+        )
+        st.markdown("---")
+
+        st.markdown("#### Étape 1 — Installer Ollama (5 min)")
+        c_dl, c_info = st.columns([2, 3])
+        with c_dl:
+            st.markdown(
+                "**1.** Rendez-vous sur **[ollama.com](https://ollama.com)**\n\n"
+                "**2.** Cliquez **Download for Windows**\n\n"
+                "**3.** Lancez l'installateur et suivez les étapes\n\n"
+                "**4.** Ollama démarre en arrière-plan — "
+                "une icône apparaît dans la barre des tâches"
+            )
+        with c_info:
+            st.info(
+                "Vos données ne quittent jamais votre PC.\n\n"
+                "Après installation, revenez ici pour l'étape 2.",
+                icon="🔒",
+            )
+        st.markdown("---")
+
+        st.markdown("#### Étape 2 — Choisir et télécharger un modèle")
+        st.caption(
+            "RAM disponible : **Ctrl+Alt+Supr** → Gestionnaire des tâches → Performances → Mémoire"
+        )
+        st.markdown("""
+| RAM | Modèle recommandé | Taille |
+|-----|-------------------|--------|
+| **< 4 Go** | `phi3:mini` | ~2,2 Go |
+| **4–8 Go** | `qwen2.5:3b` *(défaut)* | ~2,0 Go |
+| **8–16 Go** | `qwen2.5:7b` | ~4,7 Go |
+| **> 16 Go** | `qwen2.5:14b` | ~8,7 Go |
 """)
+        st.markdown("**Télécharger via PowerShell** *(Windows → `powershell` → Entrée)* :")
+        st.code("ollama pull qwen2.5:3b", language="bash")
 
-    st.markdown("---")
+        st.markdown("**Ou directement depuis Miny** :")
+        _bc1, _bc2, _bc3, _bc4 = st.columns(4)
+        for _col, _model, _ram in [
+            (_bc1, "phi3:mini",    "< 4 Go"),
+            (_bc2, "qwen2.5:3b",  "4–8 Go"),
+            (_bc3, "qwen2.5:7b",  "8–16 Go"),
+            (_bc4, "qwen2.5:14b", "> 16 Go"),
+        ]:
+            with _col:
+                st.caption(_ram)
+                if st.button(f"⬇️ {_model}", key=f"guide_dl_{_model}",
+                             use_container_width=True):
+                    if not _disponible:
+                        st.warning("Démarrez Ollama d'abord (étape 1).")
+                    else:
+                        assurer_modele_disponible(_model, placeholder=st.empty())
+        st.markdown("---")
 
-    # Étape 3
-    st.markdown("#### Étape 3 — Télécharger le modèle (une seule fois)")
-    st.markdown(
-        "Ouvrez **PowerShell** (touche Windows → tapez `powershell` → Entrée) "
-        "et collez la commande de votre modèle. "
-        "Le téléchargement prend **2 à 15 minutes** selon votre connexion."
-    )
-    st.code("ollama pull qwen2.5:3b", language="bash")
-    st.caption("Remplacez `qwen2.5:3b` par le modèle choisi au tableau ci-dessus.")
+        st.success(
+            "Miny démarre Ollama automatiquement dès votre première question. "
+            "Vous n'avez rien d'autre à configurer.",
+            icon="✅",
+        )
+        st.markdown("---")
 
-    # Boutons de téléchargement depuis l'app
-    st.markdown("**Ou téléchargez directement depuis Miny** (Ollama doit être démarré) :")
-    _bc1, _bc2, _bc3, _bc4 = st.columns(4)
-    for _col, _model, _ram in [
-        (_bc1, "phi3:mini",     "< 4 Go"),
-        (_bc2, "qwen2.5:3b",   "4–8 Go"),
-        (_bc3, "qwen2.5:7b",   "8–16 Go"),
-        (_bc4, "qwen2.5:14b",  "> 16 Go"),
-    ]:
-        with _col:
-            st.caption(_ram)
-            if st.button(f"⬇️ {_model}", key=f"guide_dl_{_model}",
-                         use_container_width=True):
-                if not _disponible:
-                    st.warning("Démarrez Ollama d'abord (étape 1).")
-                else:
-                    _ph = st.empty()
-                    assurer_modele_disponible(_model, placeholder=_ph)
+    else:
+        # ── Guide Linux / Mac local ────────────────────────────────────────────
+        st.markdown("### 🐧 Guide — Installation locale Linux / Mac")
+        st.markdown(
+            "Ollama est un moteur IA gratuit qui tourne **entièrement sur votre machine** "
+            "— aucun abonnement, aucune donnée envoyée sur Internet."
+        )
+        st.markdown("---")
 
-    st.markdown("---")
+        st.markdown("#### Étape 1 — Installer Ollama")
+        st.code("curl -fsSL https://ollama.com/install.sh | sh", language="bash")
+        st.caption("Ollama sera installé dans /usr/local/bin/ollama et démarré comme service système.")
 
-    # Étape 4
-    st.markdown("#### Étape 4 — C'est prêt !")
-    st.success(
-        "Miny démarre Ollama automatiquement dès votre première question. "
-        "Vous n'avez rien d'autre à configurer.",
-        icon="✅",
-    )
+        st.markdown("#### Étape 2 — Vérifier qu'Ollama est démarré")
+        st.code("ollama list", language="bash")
+        st.caption("Si la commande retourne une liste (vide ou non), Ollama est actif.")
 
-    st.markdown("---")
+        st.markdown("#### Étape 3 — Télécharger un modèle")
+        st.markdown("""
+| RAM | Modèle recommandé | Commande |
+|-----|-------------------|----------|
+| **< 4 Go** | `phi3:mini` | `ollama pull phi3:mini` |
+| **4–8 Go** | `qwen2.5:3b` *(défaut)* | `ollama pull qwen2.5:3b` |
+| **8–16 Go** | `qwen2.5:7b` | `ollama pull qwen2.5:7b` |
+| **> 16 Go** | `qwen2.5:14b` | `ollama pull qwen2.5:14b` |
+""")
+        st.code("ollama pull qwen2.5:3b", language="bash")
+
+        st.markdown("**Ou directement depuis Miny** :")
+        _bc1, _bc2, _bc3, _bc4 = st.columns(4)
+        for _col, _model, _ram in [
+            (_bc1, "phi3:mini",    "< 4 Go"),
+            (_bc2, "qwen2.5:3b",  "4–8 Go"),
+            (_bc3, "qwen2.5:7b",  "8–16 Go"),
+            (_bc4, "qwen2.5:14b", "> 16 Go"),
+        ]:
+            with _col:
+                st.caption(_ram)
+                if st.button(f"⬇️ {_model}", key=f"guide_dl_{_model}",
+                             use_container_width=True):
+                    if not _disponible:
+                        st.warning("Démarrez Ollama d'abord (`ollama serve`).")
+                    else:
+                        assurer_modele_disponible(_model, placeholder=st.empty())
+        st.markdown("---")
+
+        st.success(
+            "Miny détecte Ollama automatiquement au démarrage. "
+            "Si Ollama n'est pas lancé, Miny tentera de le démarrer via `ollama serve`.",
+            icon="✅",
+        )
+        st.markdown("---")
 
     # Modèles en ligne (futur)
     with st.expander("📡 Plus tard — Modèles en ligne plus performants (optionnel)", expanded=False):
@@ -294,7 +393,7 @@ with col_m1:
         st.success(f"**{_model_actif}** — prêt", icon="🤖")
     elif _disponible and not _modeles:
         st.warning(
-            "Ollama actif mais **aucun modèle installé**.\n\n"
+            "Ollama accessible mais **aucun modèle disponible**.\n\n"
             "Téléchargez-en un via le **Guide de démarrage** ci-dessus.",
             icon="🤖",
         )
@@ -303,9 +402,16 @@ with col_m1:
             "Ollama installé — démarre automatiquement à la prochaine question LLM.",
             icon="🤖",
         )
+    elif _IS_STREAMLIT_CLOUD:
+        st.error(
+            "Ollama **non accessible** depuis le serveur cloud. "
+            "Configurez **OLLAMA_HOST** dans les Secrets Streamlit pour activer les modes LLM. "
+            "Seul ⚡ Analytique fonctionne actuellement.",
+            icon="🤖",
+        )
     else:
         st.error(
-            "Ollama **non installé**. "
+            "Ollama **non installé ou non démarré**. "
             "Seul ⚡ Analytique fonctionne. "
             "Suivez le **Guide de démarrage** ci-dessus.",
             icon="🤖",

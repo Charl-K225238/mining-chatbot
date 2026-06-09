@@ -292,14 +292,31 @@ def _split_multi_question(text: str) -> tuple[str, str | None]:
 
 def _show_ollama_warning(key_suffix: str = "") -> str:
     """
-    Affiche un message adapté selon l'état d'Ollama (non installé / sans modèle / arrêté).
+    Affiche un message adapté selon l'état d'Ollama.
+    Distingue contexte local (Windows) et cloud (Linux / Streamlit Cloud).
     Redirige vers la bonne section de Paramètres via un flag de session.
     Retourne le message pour l'historique.
     """
-    _exe     = _ollama_status.get("exe")
-    _modeles = _ollama_status.get("modeles", [])
+    _exe       = _ollama_status.get("exe")
+    _modeles   = _ollama_status.get("modeles", [])
+    _is_win    = _ollama_status.get("is_windows", True)
+    _is_cloud  = _ollama_status.get("is_cloud", False)
+    _is_remote = _ollama_status.get("is_remote", False)
 
-    if not _exe:
+    if _is_cloud and not _exe:
+        # Streamlit Cloud — pas d'Ollama local, OLLAMA_HOST non configuré
+        msg = (
+            "**Ollama n'est pas accessible depuis ce serveur cloud.**\n\n"
+            "Les modes 🔢 Calcul · 🏭 Expertise · 💬 Général · 🤖 Documents "
+            "nécessitent une instance Ollama exposée sur Internet.\n\n"
+            "Configurez **OLLAMA_HOST** dans les Secrets Streamlit pour activer les modes LLM.\n\n"
+            "⚡ **Analytique** répond instantanément sans Ollama."
+        )
+        st.error(msg, icon="🤖")
+        btn_label    = "⚙️ Guide de connexion cloud →"
+        session_flag = "install"
+    elif not _exe and _is_win:
+        # Windows local — Ollama pas installé
         msg = (
             "**Ollama n'est pas installé sur ce PC.**\n\n"
             "Les modes 🔢 Calcul · 🏭 Expertise · 💬 Général · 🤖 Documents "
@@ -307,13 +324,24 @@ def _show_ollama_warning(key_suffix: str = "") -> str:
             "⚡ **Analytique** répond instantanément sans Ollama."
         )
         st.error(msg, icon="🤖")
-        btn_label    = "⚙️ Voir le guide d'installation en 4 étapes →"
+        btn_label    = "⚙️ Guide d'installation →"
+        session_flag = "install"
+    elif not _exe and not _is_win and not _is_cloud:
+        # Linux/Mac local — Ollama pas dans le PATH
+        msg = (
+            "**Ollama n'est pas installé ou n'est pas démarré.**\n\n"
+            "Installez Ollama puis lancez `ollama serve` pour activer "
+            "les modes 🔢 Calcul · 🏭 Expertise · 💬 Général.\n\n"
+            "⚡ **Analytique** répond instantanément sans Ollama."
+        )
+        st.error(msg, icon="🤖")
+        btn_label    = "⚙️ Guide d'installation →"
         session_flag = "install"
     elif not _modeles:
+        src = "accessible" if _is_remote else "installé"
         msg = (
-            "**Ollama est installé mais aucun modèle n'est encore téléchargé.**\n\n"
-            "Téléchargez un modèle (2 à 15 min selon la connexion) "
-            "pour activer les modes 🔢 Calcul · 🏭 Expertise · 💬 Général.\n\n"
+            f"**Ollama est {src} mais aucun modèle n'est encore disponible.**\n\n"
+            "Téléchargez un modèle pour activer les modes 🔢 Calcul · 🏭 Expertise · 💬 Général.\n\n"
             "⚡ **Analytique** fonctionne sans modèle."
         )
         st.warning(msg, icon="🤖")
@@ -321,7 +349,7 @@ def _show_ollama_warning(key_suffix: str = "") -> str:
         session_flag = "model"
     else:
         msg = (
-            "**Ollama est installé mais n'est pas démarré.**\n\n"
+            "**Ollama est configuré mais ne répond pas.**\n\n"
             "Il se relancera automatiquement à la prochaine question LLM. "
             "Si le problème persiste, cliquez sur **Vérifier Ollama** dans Paramètres.\n\n"
             "⚡ **Analytique** répond instantanément sans Ollama."
@@ -566,9 +594,11 @@ _   = get_index()
 _ollama_status = initialiser_ollama()   # @st.cache_resource — réseau 1 seule fois
 
 # Statut Ollama depuis le cache (évite un appel réseau sur chaque rerun)
-_ollama_dispo = _ollama_status.get("disponible", False)
-_ollama_model = _ollama_status.get("modele_actif") or "Démarrage auto"
-_ollama_exe   = _ollama_status.get("exe")
+_ollama_dispo    = _ollama_status.get("disponible", False)
+_ollama_model    = _ollama_status.get("modele_actif") or "Démarrage auto"
+_ollama_exe      = _ollama_status.get("exe")
+_ollama_is_win   = _ollama_status.get("is_windows", True)
+_ollama_is_cloud = _ollama_status.get("is_cloud", False)
 
 # Sidebar stats en une seule fois pour toute la page
 _sidebar_s = sidebar_stats()
@@ -581,7 +611,13 @@ with st.sidebar:
     if _ollama_dispo:
         st.success(f"{_ollama_model} disponible", icon="🤖")
     elif _ollama_exe:
-        st.warning("Ollama installé — démarrage automatique en cours…", icon="🤖")
+        st.warning("Ollama installé — démarrage auto…", icon="🤖")
+    elif _ollama_is_cloud:
+        st.error("LLM non configuré — ⚡ Analytique fonctionne", icon="🤖")
+        if st.button("Configurer OLLAMA_HOST →", key="sb_install_guide",
+                     use_container_width=True):
+            st.session_state["params_highlight"] = "install"
+            st.switch_page("pages/4_Parametres.py")
     else:
         st.error("Ollama non installé — ⚡ Analytique fonctionne", icon="🤖")
         if st.button("Installer Ollama →", key="sb_install_guide",

@@ -27,6 +27,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import platform
 import shutil
 import subprocess
 import sys
@@ -64,6 +65,13 @@ _NUM_PREDICT: dict[str, int] = {
 
 logger = logging.getLogger(__name__)
 
+# ── Environnement ──────────────────────────────────────────────────────────────
+_IS_WINDOWS = platform.system() == "Windows"
+
+# Streamlit Cloud : HOME=/home/appuser, pas de service systemd, pas d'Ollama local.
+# Sur Linux local l'utilisateur peut avoir Ollama installé dans le PATH.
+_IS_STREAMLIT_CLOUD = os.environ.get("HOME") == "/home/appuser"
+
 # ── Codes d'erreur internes (jamais exposés bruts à l'utilisateur) ───────────
 _NOT_INSTALLED  = "__NOT_INSTALLED__"
 _NO_MODEL       = "__NO_MODEL__"
@@ -82,26 +90,58 @@ _MAX_START_SECS  = 15   # secondes d'attente après Popen
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# 0. URL OLLAMA (résolution dynamique : env → st.secrets → settings)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _get_ollama_base_url() -> str:
+    """
+    Retourne l'URL de base Ollama selon la priorité suivante :
+      1. Variable d'environnement OLLAMA_HOST
+      2. Secret Streamlit OLLAMA_HOST (pour Streamlit Cloud)
+      3. Valeur par défaut de config/settings.py (http://localhost:11434)
+    """
+    url = os.getenv("OLLAMA_HOST")
+    if not url:
+        try:
+            url = st.secrets.get("OLLAMA_HOST")
+        except Exception:
+            pass
+    return (url or OLLAMA_BASE_URL).rstrip("/")
+
+
+def is_remote_ollama() -> bool:
+    """True si Ollama est configuré sur une URL distante (pas localhost)."""
+    url = _get_ollama_base_url()
+    return "localhost" not in url and "127.0.0.1" not in url
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # 1. TROUVER L'EXÉCUTABLE
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def trouver_ollama_exe() -> str | None:
     """
-    Cherche ollama.exe dans :
-      - le PATH système (where/which)
-      - les emplacements Windows standards définis dans config/settings.py
+    Cherche l'exécutable Ollama sur toutes les plateformes.
+    - Sur Streamlit Cloud : retourne None directement (pas d'Ollama local).
+    - Sur toutes les plateformes : vérifie le PATH d'abord (shutil.which).
+    - Sur Windows uniquement : vérifie aussi les chemins d'installation standards.
     Retourne le chemin complet ou None si introuvable.
     """
-    # 1. PATH système
+    if _IS_STREAMLIT_CLOUD:
+        # Streamlit Cloud n'a pas Ollama — accès via OLLAMA_HOST uniquement.
+        return None
+
+    # 1. PATH système — fonctionne sur Windows, Linux et Mac
     found = shutil.which("ollama")
     if found:
         return found
 
-    # 2. Emplacements Windows standards (variables d'environnement expandées)
-    for path_tpl in OLLAMA_EXE_PATHS:
-        expanded = os.path.expandvars(path_tpl)
-        if Path(expanded).exists():
-            return expanded
+    # 2. Emplacements Windows standards (non dans le PATH après installation)
+    if _IS_WINDOWS:
+        for path_tpl in OLLAMA_EXE_PATHS:
+            expanded = os.path.expandvars(path_tpl)
+            if Path(expanded).exists():
+                return expanded
 
     return None
 
@@ -113,7 +153,7 @@ def trouver_ollama_exe() -> str | None:
 def ollama_est_disponible() -> bool:
     """Vérifie que l'API Ollama répond (GET /api/tags timeout=2s)."""
     try:
-        r = requests.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=_TIMEOUT_CHECK)
+        r = requests.get(f"{_get_ollama_base_url()}/api/tags", timeout=_TIMEOUT_CHECK)
         return r.status_code == 200
     except Exception:
         return False
@@ -125,30 +165,30 @@ def ollama_est_disponible() -> bool:
 
 def demarrer_ollama() -> bool:
     """
-    Démarre Ollama silencieusement via Popen.
-    CREATE_NO_WINDOW sur Windows — aucune fenêtre terminal visible.
+    Démarre Ollama silencieusement via Popen (Windows + Linux/Mac).
+    Sur Windows : CREATE_NO_WINDOW évite d'ouvrir un terminal visible.
+    Sur Linux/Mac : Popen standard avec DEVNULL.
     Attend la disponibilité jusqu'à 15 secondes (polling 1s).
     Retourne True si Ollama répond avant la limite.
+    Ne fait rien sur Streamlit Cloud (pas d'exe local).
     """
     if ollama_est_disponible():
         return True
 
     exe = trouver_ollama_exe()
     if not exe:
-        logger.warning("ollama.exe introuvable — Ollama ne peut pas démarrer automatiquement.")
+        logger.warning("Exécutable ollama introuvable — démarrage automatique impossible.")
         return False
 
     try:
-        flags = 0
-        if os.name == "nt":
-            flags = subprocess.CREATE_NO_WINDOW  # type: ignore[attr-defined]
+        kwargs: dict = {
+            "stdout": subprocess.DEVNULL,
+            "stderr": subprocess.DEVNULL,
+        }
+        if _IS_WINDOWS:
+            kwargs["creationflags"] = subprocess.CREATE_NO_WINDOW  # type: ignore[attr-defined]
 
-        subprocess.Popen(
-            [exe, "serve"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            creationflags=flags,
-        )
+        subprocess.Popen([exe, "serve"], **kwargs)
         logger.info("Ollama lancé depuis %s — attente jusqu'à %ds.", exe, _MAX_START_SECS)
     except Exception as exc:
         logger.error("Impossible de démarrer Ollama : %s", exc)
@@ -181,7 +221,7 @@ def assurer_ollama_disponible() -> bool:
 def lister_modeles_disponibles() -> list[str]:
     """Retourne la liste des modèles installés. Retourne [] si Ollama est inactif."""
     try:
-        r = requests.get(f"{OLLAMA_BASE_URL}/api/tags", timeout=_TIMEOUT_CHECK)
+        r = requests.get(f"{_get_ollama_base_url()}/api/tags", timeout=_TIMEOUT_CHECK)
         if r.status_code == 200:
             return [m["name"] for m in r.json().get("models", [])]
     except Exception:
@@ -225,7 +265,7 @@ def assurer_modele_disponible(modele: str, placeholder=None) -> bool:
 
     try:
         with requests.post(
-            f"{OLLAMA_BASE_URL}/api/pull",
+            f"{_get_ollama_base_url()}/api/pull",
             json={"name": modele},
             stream=True,
             timeout=_TIMEOUT_PULL,
@@ -330,7 +370,7 @@ def appeler_ollama(
             return _stream_chat(payload, fallback_payload=_fb)
         else:
             r = requests.post(
-                f"{OLLAMA_BASE_URL}/api/chat",
+                f"{_get_ollama_base_url()}/api/chat",
                 json=payload,
                 timeout=_TIMEOUT_CHAT,
             )
@@ -346,7 +386,7 @@ def appeler_ollama(
             logger.info("Timeout sur %s — bascule vers %s", _modele, FALLBACK_MODEL)
             try:
                 fb_r = requests.post(
-                    f"{OLLAMA_BASE_URL}/api/chat",
+                    f"{_get_ollama_base_url()}/api/chat",
                     json={**payload, "model": FALLBACK_MODEL},
                     timeout=_TIMEOUT_CHAT,
                 )
@@ -380,7 +420,7 @@ def _stream_chat(payload: dict, fallback_payload: dict | None = None) -> Iterato
     """
     try:
         with requests.post(
-            f"{OLLAMA_BASE_URL}/api/chat",
+            f"{_get_ollama_base_url()}/api/chat",
             json=payload,
             stream=True,
             timeout=_TIMEOUT_CHAT,
@@ -421,17 +461,36 @@ def afficher_erreur_ollama(code: str) -> str:
     """
     Traduit un code d'erreur interne en message français lisible.
     JAMAIS de WinError, OSError, port, URL ou commande terminal.
+    Les messages distinguent le contexte local (Windows) et cloud (Linux).
     """
     if code == _NOT_INSTALLED:
-        return (
-            "**Ollama n'est pas installé sur ce PC.**\n\n"
-            "**Solution :** téléchargez Ollama depuis *ollama.com* "
-            "et installez-le — la page **⚙️ Paramètres** vous guidera.\n\n"
-            "_Les réponses analytiques (⚡) fonctionnent sans Ollama._"
-        )
+        if _IS_STREAMLIT_CLOUD:
+            return (
+                "**Ollama n'est pas accessible depuis ce serveur cloud.**\n\n"
+                "Les modes LLM nécessitent une instance Ollama exposée sur Internet. "
+                "Configurez **OLLAMA_HOST** dans les Secrets Streamlit pour pointer "
+                "vers votre Ollama local (ex: tunnel ngrok).\n\n"
+                "**⚙️ Paramètres** → *Guide de connexion cloud* pour les instructions.\n\n"
+                "_⚡ Analytique répond instantanément sans Ollama._"
+            )
+        elif _IS_WINDOWS:
+            return (
+                "**Ollama n'est pas installé sur ce PC.**\n\n"
+                "**Solution :** téléchargez Ollama depuis *ollama.com* "
+                "et installez-le — la page **⚙️ Paramètres** vous guidera.\n\n"
+                "_Les réponses analytiques (⚡) fonctionnent sans Ollama._"
+            )
+        else:
+            return (
+                "**Ollama n'est pas installé ou n'est pas démarré.**\n\n"
+                "**Solution :** installez Ollama (`curl -fsSL https://ollama.com/install.sh | sh`) "
+                "puis lancez `ollama serve`.\n\n"
+                "La page **⚙️ Paramètres** vous guidera.\n\n"
+                "_Les réponses analytiques (⚡) fonctionnent sans Ollama._"
+            )
     if code == _NO_MODEL:
         return (
-            "**Aucun modèle LLM compatible n'est installé.**\n\n"
+            "**Aucun modèle LLM compatible n'est disponible.**\n\n"
             "**Solution :** dans **⚙️ Paramètres**, cliquez "
             "*⬇️ Télécharger qwen2.5:3b*.\n\n"
             "_Les réponses analytiques (⚡) fonctionnent sans modèle LLM._"
@@ -474,24 +533,29 @@ def afficher_erreur_ollama(code: str) -> str:
 @st.cache_resource(show_spinner="Vérification d'Ollama…")
 def initialiser_ollama(modele: str | None = None) -> dict:
     """
-    Appelé une fois au démarrage via app.py.
-    Vérifie la disponibilité d'Ollama, tente de le démarrer si absent.
+    Appelé une fois au démarrage.
+    Vérifie la disponibilité d'Ollama (local ou réseau selon OLLAMA_HOST).
     Retourne un dict de statut stocké dans session_state.
     """
     _modele    = modele or PRIMARY_MODEL
     disponible = assurer_ollama_disponible()
     modeles    = lister_modeles_disponibles() if disponible else []
     actif      = _get_best_model() if modeles else None
+    url        = _get_ollama_base_url()
 
     status = {
-        "disponible":   disponible,
-        "modeles":      modeles,
-        "modele_actif": actif,
-        "exe":          trouver_ollama_exe(),
+        "disponible":    disponible,
+        "modeles":       modeles,
+        "modele_actif":  actif,
+        "exe":           trouver_ollama_exe(),
+        "is_windows":    _IS_WINDOWS,
+        "is_cloud":      _IS_STREAMLIT_CLOUD,
+        "ollama_url":    url,
+        "is_remote":     is_remote_ollama(),
     }
     logger.info(
-        "Ollama init — disponible=%s modele=%s exe=%s",
-        disponible, actif, status["exe"],
+        "Ollama init — disponible=%s modele=%s url=%s windows=%s cloud=%s",
+        disponible, actif, url, _IS_WINDOWS, _IS_STREAMLIT_CLOUD,
     )
     return status
 
