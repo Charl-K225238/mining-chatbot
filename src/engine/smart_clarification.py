@@ -392,19 +392,18 @@ def analyser_question(question: str) -> Optional[SmartClarification]:
     # ── 1. Correction orthographique ─────────────────────────────────────────
     corrected_q, spelling_changes = _detect_spelling(question)
     if spelling_changes:
-        needs_confirm = len(spelling_changes) > 1
         return SmartClarification(
             original_q     = question,
             reformulated_q = corrected_q,
             explanation    = (
-                "Faute(s) d'orthographe détectée(s) sur les termes métier"
+                "Fautes d'orthographe corrigées"
                 if len(spelling_changes) > 1
-                else f"Terme corrigé : *{spelling_changes[0][0]}* → **{spelling_changes[0][1]}**"
+                else f"Terme corrigé : {spelling_changes[0][0]} → {spelling_changes[0][1]}"
             ),
             category       = "spelling",
             confidence     = 0.95 if len(spelling_changes) == 1 else 0.85,
             corrections    = spelling_changes,
-            needs_confirm  = needs_confirm,
+            needs_confirm  = False,  # toujours auto-appliqué, jamais de confirmation
         )
 
     # ── 2. Inversion de structure ─────────────────────────────────────────────
@@ -416,7 +415,7 @@ def analyser_question(question: str) -> Optional[SmartClarification]:
             explanation    = inversion_explanation,
             category       = "inversion",
             confidence     = 0.80,
-            needs_confirm  = True,
+            needs_confirm  = False,  # correction évidente, auto-appliquée
         )
 
     # ── 3. Période manquante ─────────────────────────────────────────────────

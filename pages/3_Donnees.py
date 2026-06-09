@@ -95,15 +95,34 @@ else:
 
             # Zone de remplacement inline — affichée directement sous la liste, bien visible
             if _replace_target and _replace_target in [n for n, _, _ in ops_d]:
+                from src.ingest.config import TABLES as _INGEST_TABLES
+                _target_cfg  = _INGEST_TABLES.get(_replace_target)
+                _source_file = _target_cfg.file if _target_cfg else None
+                _siblings    = [
+                    t for t, cfg in _INGEST_TABLES.items()
+                    if _source_file and cfg.file == _source_file and t != _replace_target
+                ]
+
                 st.markdown('<div id="replace-zone"></div>', unsafe_allow_html=True)
-                st.info(
-                    f"**Vous remplacez `{_replace_target}`** — choisissez un fichier Excel "
-                    f"(.xlsx) ci-dessous et cliquez **⬆️ Importer et remplacer**.",
-                    icon="🔄",
-                )
-                st.markdown(f"**Remplacer `{_replace_target}` :**")
+
+                if _siblings:
+                    _sibling_str = ", ".join(f"`{t}`" for t in _siblings)
+                    st.info(
+                        f"**Fichier source : `{_source_file}`**\n\n"
+                        f"Ce fichier contient plusieurs onglets. L'importation mettra à jour "
+                        f"**toutes** ces tables simultanément : `{_replace_target}`, {_sibling_str}.\n\n"
+                        f"Importez le fichier **`{_source_file}`** ci-dessous.",
+                        icon="ℹ️",
+                    )
+                else:
+                    st.info(
+                        f"**Vous remplacez `{_replace_target}`** (`{_source_file}`) — "
+                        f"choisissez le fichier Excel (.xlsx) et cliquez **⬆️ Importer**.",
+                        icon="🔄",
+                    )
+
                 _up = st.file_uploader(
-                    "Choisir un fichier Excel (.xlsx)",
+                    f"Choisir `{_source_file or 'fichier Excel (.xlsx)'}`",
                     type=["xlsx", "xls"],
                     key=f"up_tbl_{_replace_target}",
                 )
@@ -117,14 +136,16 @@ else:
                         try:
                             save_file(_up.getvalue(), _up.name)
                             _subset = tables_for_file(_up.name)
-                            with st.spinner(f"Mise à jour de {_replace_target}…"):
+                            with st.spinner(f"Mise à jour de {len(_subset)} table(s)…"):
                                 run_pipeline(_subset)
                                 close_db()
                                 st.cache_resource.clear()
                                 st.cache_data.clear()
                                 rebuild_index()
+                            _updated = ", ".join(f"`{t}`" for t in _subset)
                             st.success(
-                                f"`{_replace_target}` remplacé avec succès. Réindexation effectuée."
+                                f"Importation réussie. Tables mises à jour : {_updated}. "
+                                f"Réindexation effectuée."
                             )
                             del st.session_state["replace_table_target"]
                             st.rerun()

@@ -445,18 +445,24 @@ def _afficher_clarification_semantique(question: str) -> None:
 def _afficher_smart_clarification(question: str, key_suffix: str = "") -> tuple[bool, bool]:
     """
     Analyse intelligente de la question : fautes, inversions, imprécisions.
-    Affiche une carte premium "Vouliez-vous dire ?" avec bouton de confirmation.
 
     Retourne un tuple (blocked, showed_something) :
       - blocked=True  → correction auto appliquée, la réponse doit être bloquée
       - showed_something=True → une carte a été affichée (évite double clarification)
-    Pour compatibilité, reste truthy/falsy via __bool__ du premier élément.
     """
     result: SmartClarification | None = _smart_analyse(question)
     if not result:
         return False, False
 
-    # ── Carte de clarification premium ───────────────────────────────────────
+    # ── Corrections évidentes : auto-apply silencieux, aucun affichage ────────
+    # Spelling (1 ou plusieurs mots) et inversion de préposition → needs_confirm=False
+    # On réécrit la question sans montrer d'UI et on relance le rendu.
+    if result.has_change and not result.needs_confirm:
+        st.session_state.pending_question = result.reformulated_q
+        st.rerun()
+
+    # ── Guidance interactive (période manquante / ambiguïté) ──────────────────
+    # On utilise exclusivement des composants Streamlit natifs (pas de HTML brut).
     cat_icons = {
         "spelling":   "✏️",
         "inversion":  "🔄",
@@ -465,45 +471,19 @@ def _afficher_smart_clarification(question: str, key_suffix: str = "") -> tuple[
     }
     icon = cat_icons.get(result.category, "💡")
 
-    container_class = {
-        "spelling":   "smart-clarif-spelling",
-        "inversion":  "smart-clarif-inversion",
-        "incomplete": "smart-clarif-incomplete",
-        "ambiguous":  "smart-clarif-ambiguous",
-    }.get(result.category, "smart-clarif-default")
-
-    # HTML de la carte (rendu premium)
-    corrections_html = ""
-    if result.corrections:
-        corrections_html = "<ul class='clarif-corrections'>"
-        for orig, fixed in result.corrections:
-            corrections_html += f"<li><s>{orig}</s> → <strong>{fixed}</strong></li>"
-        corrections_html += "</ul>"
-
-    reformulation_html = ""
-    if result.has_change:
-        reformulation_html = (
-            f"<div class='clarif-reformulation'>"
-            f"<span class='clarif-did-you-mean'>Vouliez-vous dire&nbsp;?</span>"
-            f"<span class='clarif-rewritten'>« {result.reformulated_q} »</span>"
-            f"</div>"
-        )
-
-    st.markdown(
-        f"""<div class="smart-clarif-card {container_class}">
-            <div class="clarif-header">{icon} <strong>{result.explanation}</strong></div>
-            {corrections_html}
-            {reformulation_html}
-        </div>""",
-        unsafe_allow_html=True,
-    )
+    with st.container(border=True):
+        st.markdown(f"{icon} **{result.explanation}**")
+        if result.corrections:
+            for orig, fixed in result.corrections:
+                st.markdown(f"- ~~{orig}~~ → **{fixed}**")
+        if result.has_change:
+            st.markdown(f"*Vouliez-vous dire :* **« {result.reformulated_q} »** ?")
 
     # Options de précision (ambiguïté / incomplétude)
     if result.options:
         opt_cols = st.columns(min(len(result.options), 2))
         for i, opt in enumerate(result.options[:4]):
             with opt_cols[i % len(opt_cols)]:
-                # Construire un prompt enrichi avec l'option choisie
                 enriched = f"{question} {opt.split('(')[0].strip().replace('**', '').lower()}"
                 st.button(
                     opt, key=f"smart_opt_{key_suffix}_{i}",
@@ -511,12 +491,12 @@ def _afficher_smart_clarification(question: str, key_suffix: str = "") -> tuple[
                     use_container_width=True,
                 )
 
-    # Bouton de confirmation pour reformulations (spelling / inversion)
+    # Bouton de confirmation (uniquement pour les cas où needs_confirm=True reste)
     if result.has_change and result.needs_confirm:
         c1, c2, _ = st.columns([2, 2, 6])
         with c1:
             if st.button(
-                "✅ Oui, utiliser cette formulation",
+                "✅ Oui, cette formulation",
                 key=f"smart_confirm_{key_suffix}",
                 type="primary",
                 use_container_width=True,
@@ -525,21 +505,13 @@ def _afficher_smart_clarification(question: str, key_suffix: str = "") -> tuple[
                 st.rerun()
         with c2:
             if st.button(
-                "✏️ Modifier ma question",
+                "✏️ Modifier",
                 key=f"smart_edit_{key_suffix}",
                 use_container_width=True,
             ):
-                pass  # L'utilisateur retape dans le chat
+                pass
 
-    elif result.has_change and not result.needs_confirm:
-        # Auto-application silencieuse pour corrections simples (1 faute orthographe).
-        # st.rerun() interrompt immédiatement le rendu courant — la réponse à la version
-        # originale (typo) n'est jamais générée, et la version corrigée est soumise.
-        st.caption(f"✏️ *Correction automatique appliquée : « {result.reformulated_q} »*")
-        st.session_state.pending_question = result.reformulated_q
-        st.rerun()  # FIX : interrompt le rendu, bloque la réponse à la question typo
-
-    return True, True  # carte affichée ; showed_something=True
+    return True, True
 
 
 _TYPING_HTML = (
