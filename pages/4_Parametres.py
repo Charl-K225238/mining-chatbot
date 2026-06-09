@@ -20,7 +20,7 @@ try:
         IS_WINDOWS, IS_STREAMLIT_CLOUD,
     )
     _OLLAMA_IMPORTABLE = True
-except ImportError:
+except Exception:
     _OLLAMA_IMPORTABLE = False
     IS_WINDOWS = False
     IS_STREAMLIT_CLOUD = True

@@ -549,6 +549,46 @@ def _taux(realise: float, prevu: float) -> str:
     return f"{t:.1f}% {icon}"
 
 
+# ── Calcul arithmétique simple (sans DuckDB) ──────────────────────────────────
+def handle_math(ql: str) -> str | None:
+    """
+    Calculs purs sans base de données : pourcentages, opérations de base.
+    Couvre les questions qui ne portent pas sur les données minières.
+    """
+    # X% de Y  (ex: "15% de 3500", "20% of 500")
+    m = re.search(
+        r'(\d+(?:[.,]\d+)?)\s*%\s*(?:de|of|du|des)\s*(\d[\d\s]*(?:[.,]\d+)?)',
+        ql,
+    )
+    if m:
+        pct = float(m.group(1).replace(',', '.'))
+        val = float(m.group(2).replace(' ', '').replace(',', '.'))
+        result = pct / 100 * val
+        val_fmt  = f"{val:,.0f}".replace(',', ' ')
+        res_fmt  = f"{result:,.2f}".rstrip('0').rstrip('.')
+        return f"{pct:g}% de {val_fmt} = **{res_fmt}**"
+
+    # Opérations de base : X op Y  (ex: "3500 * 0.15", "1200 + 450")
+    m = re.search(
+        r'(\d+(?:[.,]\d+)?)\s*([+\-×xX*/÷])\s*(\d+(?:[.,]\d+)?)',
+        ql,
+    )
+    if m:
+        a   = float(m.group(1).replace(',', '.'))
+        op  = m.group(2)
+        b   = float(m.group(3).replace(',', '.'))
+        sym = {'x': '×', 'X': '×', '*': '×', '/': '÷', '+': '+', '-': '−', '×': '×', '÷': '÷'}
+        if op in ('/', '÷') and b == 0:
+            return None
+        ops = {'+': a + b, '-': a - b, 'x': a * b, 'X': a * b,
+               '*': a * b, '×': a * b, '/': a / b, '÷': a / b}
+        result = ops[op]
+        res_fmt = f"{result:,.4g}"
+        return f"{a:g} {sym.get(op, op)} {b:g} = **{res_fmt}**"
+
+    return None
+
+
 def handle_compare_years(con, ql: str) -> str | None:
     years = re.findall(r"\b(20\d{2})\b", ql)
     if len(years) < 2:
@@ -2397,6 +2437,7 @@ def _handle_single(con: duckdb.DuckDBPyConnection, question: str) -> str | None:
 
     # Étape 3 : cascade de handlers — le premier qui répond gagne
     handlers = [
+        lambda: handle_math(ql),
         lambda: handle_compare_years(con, ql),
         lambda: handle_suivi_actions(con, ql),
         lambda: handle_objectifs(con, ql, year),

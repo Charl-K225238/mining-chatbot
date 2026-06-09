@@ -68,12 +68,11 @@ logger = logging.getLogger(__name__)
 # ── Environnement ──────────────────────────────────────────────────────────────
 IS_WINDOWS = platform.system() == "Windows"
 
-# Streamlit Cloud : STREAMLIT_SHARING_MODE=streamlit (officiel) ou HOME=/home/appuser
-# (heuristique image Docker). Les deux sont testés pour couvrir les futures évolutions.
-# Sur Linux local l'utilisateur peut avoir Ollama installé dans le PATH.
+# Streamlit Cloud : STREAMLIT_SHARING_MODE=streamlit (officiel),
+# HOME=/home/appuser (ancienne image) ou HOME=/home/adminuser (image Python 3.14+).
 IS_STREAMLIT_CLOUD = (
     os.environ.get("STREAMLIT_SHARING_MODE") == "streamlit"
-    or os.environ.get("HOME") == "/home/appuser"
+    or os.environ.get("HOME") in ("/home/appuser", "/home/adminuser")
 )
 
 # ── Codes d'erreur internes (jamais exposés bruts à l'utilisateur) ───────────
@@ -470,12 +469,10 @@ def afficher_erreur_ollama(code: str) -> str:
     if code == _NOT_INSTALLED:
         if IS_STREAMLIT_CLOUD:
             return (
-                "**Ollama n'est pas accessible depuis ce serveur cloud.**\n\n"
-                "Les modes LLM nécessitent une instance Ollama exposée sur Internet. "
-                "Configurez **OLLAMA_HOST** dans les Secrets Streamlit pour pointer "
-                "vers votre Ollama local (ex: tunnel ngrok).\n\n"
-                "**⚙️ Paramètres** → *Guide de connexion cloud* pour les instructions.\n\n"
-                "_⚡ Analytique répond instantanément sans Ollama._"
+                "**Cette question dépasse les capacités analytiques de Miny.**\n\n"
+                "Miny répond aux questions sur les données de la mine : "
+                "tonnage, pannes, carburant, objectifs, PGES, heures machine.\n\n"
+                "_Consultez **📖 Documentation** pour voir les exemples de questions._"
             )
         elif IS_WINDOWS:
             return (
