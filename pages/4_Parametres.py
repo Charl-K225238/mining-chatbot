@@ -98,10 +98,17 @@ _model_actif = active_model_name() if _modeles else "—"
 _ollama_pret = _disponible and bool(_modeles)
 
 # ── Guide de démarrage ─────────────────────────────────────────────────────────
-with st.expander(
+if groq_est_disponible():
+    st.success(
+        "**Service IA actif** — tous les modes sont disponibles.\n\n"
+        "⚡ Analytique · 🔢 Calcul · 🏭 Expertise · 💬 Général",
+        icon="✅",
+    )
+else:
+ with st.expander(
     "🚀 Démarrage — Configurer Ollama",
     expanded=(not _ollama_pret or _nav_highlight == "install"),
-):
+ ):
     st.info(
         "**⚡ Mode Analytique** fonctionne sans Ollama — réponses instantanées depuis DuckDB. "
         "Les modes 🔢 Calcul · 🏭 Expertise · 💬 Général · 🤖 Documents nécessitent Ollama.",
