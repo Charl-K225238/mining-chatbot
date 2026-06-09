@@ -44,37 +44,10 @@ st.markdown("""
             box-shadow:0 2px 10px rgba(27,79,114,.3)">
   <h1 style="margin:0;font-size:2rem;font-weight:700">⛏ Miny</h1>
   <p style="margin:6px 0 0 0;opacity:.9;font-size:1rem">
-      Votre assistant BI minier — données, calculs, expertise et documents en français
+      Votre assistant BI minier — interrogez vos données minières en français
   </p>
 </div>
 """, unsafe_allow_html=True)
-
-# ── Ce que Miny sait faire ────────────────────────────────────────────────────
-st.markdown("#### Interrogez vos données minières en français — réponses instantanées")
-
-_card = (
-    "padding:14px 16px;border-radius:10px;height:100%;border-left:4px solid {color};"
-    "background:{bg};margin-bottom:4px"
-)
-_d1, _d2, _d3 = st.columns(3)
-_d1.markdown(
-    f'<div style="{_card.format(color="#27AE60", bg="#f0faf3")}">'
-    "<b>📦 Production & Tonnage</b><br>"
-    "<small style='color:#555'>Descendu · Excavé · Transporté · Port · Navire</small>"
-    "</div>", unsafe_allow_html=True,
-)
-_d2.markdown(
-    f'<div style="{_card.format(color="#E74C3C", bg="#fff5f5")}">'
-    "<b>⚠️ Pannes & Heures machine</b><br>"
-    "<small style='color:#555'>Tombereaux · Trencher · Disponibilité · Shifts</small>"
-    "</div>", unsafe_allow_html=True,
-)
-_d3.markdown(
-    f'<div style="{_card.format(color="#2471A3", bg="#f0f6fc")}">'
-    "<b>🛢️ Carburant & Objectifs</b><br>"
-    "<small style='color:#555'>Par engin · Par mois · Approvisionnement · Taux réalisation</small>"
-    "</div>", unsafe_allow_html=True,
-)
 
 # ── Navigation ────────────────────────────────────────────────────────────────
 st.markdown("#### Navigation")
@@ -90,7 +63,7 @@ with col1:
         f'<div style="{_nav_card.format(color="#1B4F72")}">'
         '<div style="font-size:2rem">💬</div>'
         '<div style="font-weight:700;color:#1B4F72">Assistant</div>'
-        '<div style="font-size:.8rem;color:#666">Chat analytique et IA</div>'
+        '<div style="font-size:.8rem;color:#666">Chat analytique</div>'
         "</div>", unsafe_allow_html=True,
     )
     if st.button("Ouvrir →", key="nav_assistant", use_container_width=True):

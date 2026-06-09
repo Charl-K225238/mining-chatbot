@@ -1135,7 +1135,8 @@ def handle_tombereaux(con, ql: str) -> str | None:
     if "tombereau" not in ql:
         return None
     # Céder la main à handle_carburant pour les questions carburant+engin
-    if any(w in ql for w in ["carburant", "gasoil", "diesel", "litre", "consomm", "citerne"]):
+    if any(w in ql for w in ["carburant", "gasoil", "diesel", "litre", "consomm",
+                              "citerne", "depotage", "approvisionne", "ravitaillement"]):
         return None
 
     year = _year(ql)
@@ -1509,8 +1510,6 @@ def handle_carburant(con, ql: str, year, months=None, quarter=None,
             w_parts.append(f'MONTH("{CARB_DATE}") IN ({",".join(map(str,qm))})')
         elif months and len(months) == 1:
             w_parts.append(f'MONTH("{CARB_DATE}") = {months[0]}')
-    carb_w = "WHERE " + " AND ".join(w_parts)
-
     lbl = _label(year, months[0] if months and len(months)==1 else None, quarter, semester)
     wants_monthly  = any(w in ql for w in ["par mois", "mensuel", "mensuelle"])
     wants_by_engin = any(w in ql for w in ["par engin", "par machine", "par tombereau",
@@ -1519,7 +1518,8 @@ def handle_carburant(con, ql: str, year, months=None, quarter=None,
                                             "chaque engin", "chaque machine"])
     wants_depot    = any(w in ql for w in ["depotage", "approvisionnement", "approvisionne", "recharge", "ravitaillement"])
 
-    # Filtre optionnel sur un type d'engin spécifique
+    # Filtre optionnel sur un type d'engin — intégré dans w_parts pour s'appliquer
+    # à toutes les branches (mensuel, par engin, total)
     _ENGIN_TYPES = [
         ("chargeuse", "CHARGEUSE"), ("tombereau", "TOMBEREAU"), ("bulldozer", "BULLDOZER"),
         ("bull",      "BULL"),      ("grader",    "GRADER"),    ("tracteur",  "TRACTEUR"),
@@ -1527,8 +1527,9 @@ def handle_carburant(con, ql: str, year, months=None, quarter=None,
         ("compresseur", "COMPRESSEUR"), ("pelle",   "PC "),
     ]
     _engin_type = next((up for kw, up in _ENGIN_TYPES if kw in ql), None)
-    _engin_extra = (f' AND UPPER(TRIM("{CARB_ENGIN}")) LIKE \'%{_engin_type}%\''
-                    if _engin_type else "")
+    if _engin_type:
+        w_parts.append(f'UPPER(TRIM("{CARB_ENGIN}")) LIKE \'%{_engin_type}%\'')
+    carb_w = "WHERE " + " AND ".join(w_parts)
 
     # Approvisionnement citerne (depotage)
     if wants_depot:
@@ -1542,7 +1543,7 @@ def handle_carburant(con, ql: str, year, months=None, quarter=None,
     if wants_by_engin or _engin_type:
         df = _q(con, f"""
             SELECT "{CARB_ENGIN}" AS engin, SUM("{CARB_QTY}") AS litres
-            FROM {CARB_TABLE} {carb_w}{_engin_extra}
+            FROM {CARB_TABLE} {carb_w}
             GROUP BY 1 ORDER BY 2 DESC
         """)
         if df.empty:

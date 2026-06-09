@@ -102,8 +102,9 @@ else:
                             f"<span style='color:grey;font-size:0.85em'>— {len(_group)} onglets</span>",
                             unsafe_allow_html=True,
                         )
-                        if _fh2.button("🔄 Remplacer ce fichier", key=f"repl_grp_{_src_file}",
-                                       use_container_width=True):
+                        if (_fh2.button("🔄 Remplacer ce fichier", key=f"repl_grp_{_src_file}",
+                                        use_container_width=True)
+                                and st.session_state.get("replace_table_target") != _rep_name):
                             st.session_state["replace_table_target"] = _rep_name
                             st.rerun()
                         # Sous-lignes sans boutons individuels

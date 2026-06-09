@@ -868,9 +868,8 @@ if prompt:
         _afficher_clarification_semantique(_effective_prompt)
 
     # 3. Conseils qualité — supprimés si une guidance domaine est déjà visible
-    # (question_large affiche déjà 4 boutons de domaine : le conseil "précisez le domaine"
-    # serait redondant et moins utile que les boutons cliquables)
-    if not _smart_blocked and route.get("clarif_type") != "question_large":
+    # (question_large/trop_courte affichent déjà leurs propres exemples cliquables)
+    if not _smart_blocked and route.get("clarif_type") not in ("question_large", "trop_courte"):
         _afficher_consignes(_verif_qualite(_effective_prompt))
 
     with st.chat_message("user"):

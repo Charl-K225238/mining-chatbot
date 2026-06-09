@@ -86,7 +86,7 @@ def generer_questions_suivi(
     if clarif_type == "periode_manquante":
         return _gen_periode(question, annees_disponibles)
     if clarif_type == "table_ambigue":
-        return _gen_table_ambigue(question, tables_candidates)
+        return _gen_table_ambigue(question, tables_candidates, ctx)
     if clarif_type == "domaine_inconnu":
         return _gen_domaine_inconnu(ctx)
     if clarif_type == "table_introuvable":
@@ -176,10 +176,10 @@ def _gen_periode(question: str, annees: list[int] | None) -> list[dict]:
     ]
 
 
-def _gen_table_ambigue(question: str, tables: list[str] | None) -> list[dict]:
+def _gen_table_ambigue(question: str, tables: list[str] | None, ctx: dict | None = None) -> list[dict]:
     """Propose une option cliquable par table candidate (max 3)."""
     if not tables:
-        return _gen_domaine_inconnu()
+        return _gen_domaine_inconnu(ctx)
     result = []
     for t in tables[:3]:
         label = _TABLE_LABELS.get(t, t.replace("_", " ").title())
