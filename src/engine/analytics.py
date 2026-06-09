@@ -577,6 +577,9 @@ def handle_math(ql: str) -> str | None:
         a   = float(m.group(1).replace(',', '.'))
         op  = m.group(2)
         b   = float(m.group(3).replace(',', '.'))
+        # Ne pas intercepter les plages d'années (ex: "2024 - 2025" → compare_years)
+        if 2000 <= a <= 2099 and 2000 <= b <= 2099:
+            return None
         sym = {'x': '×', 'X': '×', '*': '×', '/': '÷', '+': '+', '-': '−', '×': '×', '÷': '÷'}
         if op in ('/', '÷') and b == 0:
             return None

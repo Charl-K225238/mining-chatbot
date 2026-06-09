@@ -431,7 +431,10 @@ st.markdown("### Modèle LLM actif")
 
 col_m1, col_m2 = st.columns(2)
 with col_m1:
-    if _ollama_pret:
+    if groq_est_disponible():
+        st.success(f"**{active_model_name()}** via Groq — prêt", icon="🤖")
+        st.caption("Les modes IA utilisent l'API Groq. Aucun modèle local requis.")
+    elif _ollama_pret:
         st.success(f"**{_model_actif}** — prêt", icon="🤖")
     elif _disponible and not _modeles:
         st.warning(
@@ -446,9 +449,8 @@ with col_m1:
         )
     elif IS_STREAMLIT_CLOUD:
         st.error(
-            "Ollama **non accessible** depuis le serveur cloud. "
-            "Configurez **OLLAMA_HOST** dans les Secrets Streamlit pour activer les modes LLM. "
-            "Seul ⚡ Analytique fonctionne actuellement.",
+            "Aucun service IA configuré. "
+            "Suivez le **Guide de démarrage** ci-dessus pour activer Groq.",
             icon="🤖",
         )
     else:
@@ -459,34 +461,37 @@ with col_m1:
             icon="🤖",
         )
 
-    if st.button("🔍 Vérifier Ollama", use_container_width=True):
-        with st.spinner("Test en cours…"):
-            from core.ollama_client import assurer_ollama_disponible
-            _ok = assurer_ollama_disponible()
-        if _ok:
-            st.success(f"Ollama disponible — modèle : **{active_model_name()}**", icon="🤖")
-        else:
-            st.warning(
-                "Ollama n'a pas répondu.\n\n"
-                "_⚡ Analytique fonctionne sans Ollama. "
-                "Modes 🔢 🏭 💬 🤖 nécessitent Ollama._"
-            )
+    if not groq_est_disponible():
+        if st.button("🔍 Vérifier Ollama", use_container_width=True):
+            with st.spinner("Test en cours…"):
+                from core.ollama_client import assurer_ollama_disponible
+                _ok = assurer_ollama_disponible()
+            if _ok:
+                st.success(f"Ollama disponible — modèle : **{active_model_name()}**", icon="🤖")
+            else:
+                st.warning(
+                    "Ollama n'a pas répondu.\n\n"
+                    "_⚡ Analytique fonctionne sans Ollama. "
+                    "Modes 🔢 🏭 💬 🤖 nécessitent Ollama._"
+                )
 
-    if _modeles:
-        st.selectbox("Modèles installés", options=_modeles, index=0, key="selected_model")
-    else:
-        st.caption("Aucun modèle installé — voir le Guide de démarrage.")
+        if _modeles:
+            st.selectbox("Modèles installés", options=_modeles, index=0, key="selected_model")
+        else:
+            st.caption("Aucun modèle installé — voir le Guide de démarrage.")
 
     st.markdown("**Télécharger rapidement :**")
     _dl1, _dl2 = st.columns(2)
     with _dl1:
-        if st.button(f"⬇️ {PRIMARY_MODEL}", use_container_width=True, key="dl_primary"):
+        if st.button(f"⬇️ {PRIMARY_MODEL}", use_container_width=True, key="dl_primary",
+                     disabled=groq_est_disponible()):
             if not _disponible:
                 st.error("Démarrez Ollama d'abord.")
             else:
                 assurer_modele_disponible(PRIMARY_MODEL, placeholder=st.empty())
     with _dl2:
-        if st.button(f"⬇️ {FALLBACK_MODEL}", use_container_width=True, key="dl_fallback"):
+        if st.button(f"⬇️ {FALLBACK_MODEL}", use_container_width=True, key="dl_fallback",
+                     disabled=groq_est_disponible()):
             if not _disponible:
                 st.error("Démarrez Ollama d'abord.")
             else:
