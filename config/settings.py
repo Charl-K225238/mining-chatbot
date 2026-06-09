@@ -21,6 +21,10 @@ OLLAMA_EXE_PATHS: list[str] = [
 # ── Engins ─────────────────────────────────────────────────────────────────
 ENGIN_DEFAUT = "TRENCHER TRS N°296"
 
+# ── Groq Cloud ─────────────────────────────────────────────────────────────
+GROQ_PRIMARY_MODEL  = "llama-3.1-8b-instant"   # rapide, gratuit
+GROQ_FALLBACK_MODEL = "gemma2-9b-it"            # backup si quota dépassé
+
 # ── Paramètres LLM (défauts) ───────────────────────────────────────────────
 NUM_CTX_DEFAULT       = 2048   # recommandé pour 8 Go RAM
 NUM_CTX_MAX           = 8192

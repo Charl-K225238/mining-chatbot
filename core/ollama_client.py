@@ -48,10 +48,20 @@ from config.settings import (
     OLLAMA_EXE_PATHS,
     PRIMARY_MODEL,
     FALLBACK_MODEL,
+    GROQ_PRIMARY_MODEL,
+    GROQ_FALLBACK_MODEL,
     NUM_CTX_DEFAULT,
     TEMPERATURE_DEFAULT,
 )
 from src.llm.prompts import build_prompt, get_system_prompt
+
+# Import optionnel du SDK Groq (absent en local si non installé)
+try:
+    from groq import Groq as _GroqClient
+    _GROQ_AVAILABLE = True
+except ImportError:
+    _GroqClient = None  # type: ignore[assignment,misc]
+    _GROQ_AVAILABLE = False
 
 # Nombre de tokens générés selon le mode LLM
 _NUM_PREDICT: dict[str, int] = {
@@ -116,6 +126,92 @@ def is_remote_ollama() -> bool:
     """True si Ollama est configuré sur une URL distante (pas localhost)."""
     url = _get_ollama_base_url()
     return "localhost" not in url and "127.0.0.1" not in url
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# 0b. GROQ API (backend cloud gratuit)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def _get_groq_api_key() -> str | None:
+    """Lit GROQ_API_KEY depuis env ou Streamlit Secrets."""
+    key = os.getenv("GROQ_API_KEY")
+    if not key:
+        try:
+            key = st.secrets.get("GROQ_API_KEY")
+        except Exception:
+            pass
+    return key or None
+
+
+def groq_est_disponible() -> bool:
+    """True si le SDK Groq est installé et une clé API est configurée."""
+    return _GROQ_AVAILABLE and bool(_get_groq_api_key())
+
+
+def _stream_groq(
+    messages: list[dict],
+    model: str,
+    max_tokens: int,
+    temperature: float,
+) -> Iterator[str]:
+    """Streaming Groq — yield token par token (interface identique à _stream_chat)."""
+    key = _get_groq_api_key()
+    if not key or not _GROQ_AVAILABLE:
+        yield afficher_erreur_ollama(_NOT_INSTALLED)
+        return
+    try:
+        client = _GroqClient(api_key=key)
+        completion = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            stream=True,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
+        for chunk in completion:
+            token = chunk.choices[0].delta.content or ""
+            if token:
+                yield token
+    except Exception as exc:
+        err = str(exc)
+        if "rate_limit" in err.lower() or "429" in err:
+            # Quota dépassé → bascule modèle léger
+            if model != GROQ_FALLBACK_MODEL:
+                yield SWITCH_MODEL_SENTINEL
+                yield from _stream_groq(messages, GROQ_FALLBACK_MODEL, max_tokens, temperature)
+            else:
+                yield afficher_erreur_ollama(f"{_ERROR_PREFIX}Quota Groq dépassé")
+        else:
+            yield afficher_erreur_ollama(f"{_ERROR_PREFIX}{exc}")
+
+
+def _call_groq(
+    messages: list[dict],
+    model: str,
+    max_tokens: int,
+    temperature: float,
+) -> str:
+    """Appel Groq non-streaming — retourne la réponse complète."""
+    key = _get_groq_api_key()
+    if not key or not _GROQ_AVAILABLE:
+        return afficher_erreur_ollama(_NOT_INSTALLED)
+    try:
+        client = _GroqClient(api_key=key)
+        completion = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            stream=False,
+            max_tokens=max_tokens,
+            temperature=temperature,
+        )
+        return completion.choices[0].message.content or ""
+    except Exception as exc:
+        err = str(exc)
+        if "rate_limit" in err.lower() or "429" in err:
+            if model != GROQ_FALLBACK_MODEL:
+                return _call_groq(messages, GROQ_FALLBACK_MODEL, max_tokens, temperature)
+            return afficher_erreur_ollama(f"{_ERROR_PREFIX}Quota Groq dépassé")
+        return afficher_erreur_ollama(f"{_ERROR_PREFIX}{exc}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -314,17 +410,33 @@ def appeler_ollama(
     stream:   bool = False,
 ) -> str | Iterator[str]:
     """
-    Pipeline complet :
-      assurer_ollama_disponible() → vérifier modèle → POST /api/chat
-      → si ConnectionError : demarrer_ollama() puis retry une fois.
+    Pipeline LLM unifié : Groq (si clé configurée) → Ollama local/distant.
 
     Retour :
       stream=False → str   (réponse complète ou code d'erreur interne)
       stream=True  → Iterator[str]  (tokens ou message d'erreur unique)
-
-    Codes d'erreur internes (traduits par afficher_erreur_ollama()) :
-      __NOT_INSTALLED__  __NO_MODEL__  __TIMEOUT__  __ERROR__:msg
     """
+    system_prompt = get_system_prompt(question, mode=mode)
+    user_prompt   = build_prompt(question, context, mode=mode)
+    messages      = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user",   "content": user_prompt},
+    ]
+    max_tokens  = _NUM_PREDICT.get(mode, 500)
+    try:
+        temperature = st.session_state.get("adv_temperature", TEMPERATURE_DEFAULT)
+    except Exception:
+        temperature = TEMPERATURE_DEFAULT
+
+    # ── Backend Groq (priorité si clé disponible) ────────────────────────────
+    if groq_est_disponible():
+        groq_model = modele or GROQ_PRIMARY_MODEL
+        if stream:
+            return _stream_groq(messages, groq_model, max_tokens, temperature)
+        else:
+            return _call_groq(messages, groq_model, max_tokens, temperature)
+
+    # ── Backend Ollama (local ou distant via OLLAMA_HOST) ────────────────────
     if not assurer_ollama_disponible():
         code = _NOT_INSTALLED if trouver_ollama_exe() is None else f"{_ERROR_PREFIX}Ollama n'a pas pu démarrer"
         return iter([afficher_erreur_ollama(code)]) if stream else afficher_erreur_ollama(code)
@@ -337,9 +449,6 @@ def appeler_ollama(
         code = _NO_MODEL
         return iter([afficher_erreur_ollama(code)]) if stream else afficher_erreur_ollama(code)
 
-    system_prompt = get_system_prompt(question, mode=mode)
-    user_prompt   = build_prompt(question, context, mode=mode)
-
     # Lire les paramètres depuis la session utilisateur (slider Paramètres)
     try:
         _num_ctx     = st.session_state.get("adv_num_ctx",     NUM_CTX_DEFAULT)
@@ -349,14 +458,11 @@ def appeler_ollama(
 
     payload = {
         "model":  _modele,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user",   "content": user_prompt},
-        ],
+        "messages": messages,
         "stream": stream,
         "options": {
             "temperature":    _temperature,
-            "num_predict":    _NUM_PREDICT.get(mode, 500),
+            "num_predict":    max_tokens,
             "num_ctx":        _num_ctx,
             "repeat_penalty": 1.1,
             "top_p":          0.9,
@@ -469,10 +575,11 @@ def afficher_erreur_ollama(code: str) -> str:
     if code == _NOT_INSTALLED:
         if IS_STREAMLIT_CLOUD:
             return (
-                "**Cette question dépasse les capacités analytiques de Miny.**\n\n"
-                "Miny répond aux questions sur les données de la mine : "
-                "tonnage, pannes, carburant, objectifs, PGES, heures machine.\n\n"
-                "_Consultez **📖 Documentation** pour voir les exemples de questions._"
+                "**Service IA non configuré.**\n\n"
+                "Pour activer les modes IA, ajoutez votre clé Groq dans les Secrets Streamlit : "
+                "`GROQ_API_KEY = \"gsk_…\"`\n\n"
+                "Rendez-vous dans **⚙️ Paramètres → Guide de démarrage** pour les instructions.\n\n"
+                "_Les réponses analytiques (⚡) fonctionnent sans configuration IA._"
             )
         elif IS_WINDOWS:
             return (
@@ -531,32 +638,42 @@ def afficher_erreur_ollama(code: str) -> str:
 # 9. INITIALISATION AU DÉMARRAGE (@st.cache_resource)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-@st.cache_resource(show_spinner="Vérification d'Ollama…")
+@st.cache_resource(show_spinner="Vérification du service LLM…")
 def initialiser_ollama(modele: str | None = None) -> dict:
     """
     Appelé une fois au démarrage.
-    Vérifie la disponibilité d'Ollama (local ou réseau selon OLLAMA_HOST).
-    Retourne un dict de statut stocké dans session_state.
+    Détecte Groq (priorité) ou Ollama. Retourne un dict de statut.
     """
-    _modele    = modele or PRIMARY_MODEL
-    disponible = assurer_ollama_disponible()
-    modeles    = lister_modeles_disponibles() if disponible else []
-    actif      = _get_best_model() if modeles else None
-    url        = _get_ollama_base_url()
+    _use_groq  = groq_est_disponible()
+    disponible: bool
+    modeles:    list[str]
+    actif:      str | None
+
+    if _use_groq:
+        disponible = True
+        modeles    = [GROQ_PRIMARY_MODEL, GROQ_FALLBACK_MODEL]
+        actif      = GROQ_PRIMARY_MODEL
+        url        = "groq-api"
+    else:
+        disponible = assurer_ollama_disponible()
+        modeles    = lister_modeles_disponibles() if disponible else []
+        actif      = _get_best_model() if modeles else None
+        url        = _get_ollama_base_url()
 
     status = {
         "disponible":    disponible,
         "modeles":       modeles,
         "modele_actif":  actif,
-        "exe":           trouver_ollama_exe(),
+        "exe":           None if _use_groq else trouver_ollama_exe(),
         "is_windows":    IS_WINDOWS,
         "is_cloud":      IS_STREAMLIT_CLOUD,
         "ollama_url":    url,
-        "is_remote":     is_remote_ollama(),
+        "is_remote":     _use_groq or is_remote_ollama(),
+        "use_groq":      _use_groq,
     }
     logger.info(
-        "Ollama init — disponible=%s modele=%s url=%s windows=%s cloud=%s",
-        disponible, actif, url, IS_WINDOWS, IS_STREAMLIT_CLOUD,
+        "LLM init — groq=%s ollama=%s modele=%s url=%s",
+        _use_groq, disponible if not _use_groq else "—", actif, url,
     )
     return status
 
@@ -566,7 +683,9 @@ def initialiser_ollama(modele: str | None = None) -> dict:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 def is_available(model: str | None = None) -> bool:
-    """Rétrocompat — True si Ollama est démarré ET un modèle compatible existe."""
+    """True si un backend LLM est disponible (Groq ou Ollama)."""
+    if groq_est_disponible():
+        return True
     if not ollama_est_disponible():
         return False
     models = lister_modeles_disponibles()
@@ -581,7 +700,9 @@ def is_available(model: str | None = None) -> bool:
 
 
 def active_model_name() -> str:
-    """Rétrocompat — retourne le nom du modèle actif (pour affichage UI)."""
+    """Retourne le nom du modèle actif (Groq ou Ollama)."""
+    if groq_est_disponible():
+        return GROQ_PRIMARY_MODEL
     return _get_best_model()
 
 

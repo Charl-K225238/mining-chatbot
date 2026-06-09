@@ -17,6 +17,7 @@ try:
         is_available, active_model_name,
         lister_modeles_disponibles, assurer_modele_disponible, assurer_ollama_disponible,
         ollama_est_disponible, trouver_ollama_exe, is_remote_ollama,
+        groq_est_disponible,
         IS_WINDOWS, IS_STREAMLIT_CLOUD,
     )
     _OLLAMA_IMPORTABLE = True
@@ -32,6 +33,7 @@ except Exception:
     def ollama_est_disponible(*a, **kw): return False
     def trouver_ollama_exe(*a, **kw): return None
     def is_remote_ollama(*a, **kw): return False
+    def groq_est_disponible(*a, **kw): return False
 from src.db.connection import close as close_db
 from src.engine.query_router import rebuild_index
 from src.engine.clarification import CONSIGNES
@@ -158,85 +160,91 @@ with st.expander(
     if IS_STREAMLIT_CLOUD:
         # ── Guide Streamlit Cloud ──────────────────────────────────────────────
         st.info(
-            "Miny est hébergé sur un serveur cloud qui n'a pas accès à votre PC. "
-            "Pour activer les modes IA, il faut :\n\n"
-            "**1.** Faire tourner Ollama sur votre PC\n\n"
-            "**2.** Créer un lien sécurisé entre votre PC et Miny *(ngrok, gratuit, 3 min)*\n\n"
-            "**3.** Coller l'adresse du lien dans les réglages de Miny",
+            "Miny est hébergé sur un serveur cloud sans accès à votre PC. "
+            "Deux options pour activer les modes IA :",
             icon="☁️",
         )
-        st.markdown("---")
 
-        st.markdown("#### Étape 1 — Installer Ollama sur votre PC")
-        _e1w, _e1l = st.columns(2)
-        with _e1w:
-            st.markdown("**Windows**")
-            st.link_button(
-                "⬇️ Télécharger Ollama pour Windows",
-                "https://ollama.com/download/OllamaSetup.exe",
-                use_container_width=True,
-            )
-            st.caption("Lancez le fichier téléchargé et suivez les étapes.")
-        with _e1l:
-            st.markdown("**Mac / Linux** — dans un terminal :")
-            st.code("curl -fsSL https://ollama.com/install.sh | sh", language="bash")
-            st.link_button("Ou télécharger pour Mac", "https://ollama.com/download/Ollama-darwin.zip",
-                           use_container_width=True)
-        st.markdown("Puis téléchargez le modèle IA *(dans un terminal)* :")
-        st.code("ollama pull qwen2.5:3b", language="bash")
-        st.markdown("---")
+        _tab_groq, _tab_ngrok = st.tabs(["⚡ Option A — Groq (recommandé)", "🔗 Option B — ngrok"])
 
-        st.markdown("#### Étape 2 — Créer un lien sécurisé avec ngrok")
-        st.markdown(
-            "ngrok crée une adresse publique qui pointe vers votre Ollama. "
-            "Gratuit, sans carte bancaire."
-        )
-        _ng1, _ng2 = st.columns([3, 2])
-        with _ng1:
-            st.markdown("**1.** Créez un compte ngrok (gratuit, sans carte bancaire) :")
-            st.link_button("Créer un compte ngrok",
-                           "https://dashboard.ngrok.com/signup", use_container_width=True)
-            st.markdown("**2.** Récupérez votre token — cliquez sur ce bouton :")
-            st.link_button("📋 Copier mon Authtoken ngrok",
-                           "https://dashboard.ngrok.com/get-started/your-authtoken",
-                           use_container_width=True)
+        with _tab_groq:
             st.markdown(
-                "Sur cette page, cliquez sur le **bouton Copy** *(ne sélectionnez pas "
-                "le texte à la main — le token peut être tronqué)*."
+                "**Groq** est une API IA gratuite, sans installation, "
+                "sans délai et sans URL à gérer. C'est l'option la plus simple."
             )
-            st.markdown("**3.** Dans un terminal, exécutez ces deux commandes *(l'une après l'autre)* :")
-            st.code("ngrok config add-authtoken COLLEZ_VOTRE_TOKEN_ICI", language="bash")
-            st.code("ngrok http 11434 --host-header=localhost", language="bash")
+            st.markdown("---")
+            st.markdown("#### Étape 1 — Créer un compte Groq gratuit")
+            st.link_button("Créer un compte Groq", "https://console.groq.com/login",
+                           type="primary", use_container_width=False)
+            st.markdown("---")
+            st.markdown("#### Étape 2 — Générer une clé API")
+            st.link_button("Mes clés API Groq", "https://console.groq.com/keys",
+                           use_container_width=False)
             st.markdown(
-                "**4.** Une fenêtre s'affiche avec une adresse **Forwarding**. "
-                "Copiez l'adresse `https://…` :\n\n"
-                "```\nForwarding  https://xxxx.ngrok-free.app\n```"
+                "Cliquez **Create API key**, donnez-lui un nom (ex: `miny`), "
+                "puis copiez la clé affichée *(elle commence par `gsk_…`)*."
             )
-        with _ng2:
-            st.warning(
-                "**Laissez cette fenêtre ouverte** pendant que vous utilisez Miny. "
-                "La fermer coupe la connexion.",
-                icon="⚠️",
+            st.markdown("---")
+            st.markdown("#### Étape 3 — Ajouter la clé dans Miny")
+            st.link_button("Ouvrir les Secrets Streamlit", "https://share.streamlit.io",
+                           use_container_width=False)
+            st.markdown(
+                "Votre application → menu **⋯** → **Settings** → **Secrets**, "
+                "puis collez :"
             )
-            st.info(
-                "L'adresse change à chaque fois que vous relancez ngrok *(version gratuite)*. "
-                "Il faudra répéter l'étape 3 à chaque nouvelle session.",
-                icon="ℹ️",
+            st.code('GROQ_API_KEY = "gsk_votre_cle_ici"', language="toml")
+            st.markdown("Cliquez **Save** — Miny redémarre en 30 secondes.")
+            st.success(
+                "C'est tout. Aucune installation, aucune fenêtre à laisser ouverte.",
+                icon="✅",
             )
-        st.markdown("---")
 
-        st.markdown("#### Étape 3 — Relier Miny à votre PC")
-        st.markdown("**1.** Ouvrez les réglages de l'application :")
-        st.link_button("Ouvrir les Secrets Streamlit",
-                       "https://share.streamlit.io", use_container_width=False)
-        st.markdown(
-            "**2.** Votre application → menu **⋯** → **Settings** → **Secrets**\n\n"
-            "**3.** Collez la ligne ci-dessous en remplaçant l'adresse par celle de ngrok :"
-        )
-        st.code('OLLAMA_HOST = "https://xxxx.ngrok-free.app"', language="toml")
-        st.markdown("**4.** Cliquez **Save** — Miny redémarre automatiquement (30 secondes)")
-        st.markdown("**5.** Revenez sur cette page et cliquez **🔍 Vérifier Ollama** ci-dessous")
-        st.success("Une fois configuré, les 4 modes IA deviennent disponibles.", icon="✅")
+        with _tab_ngrok:
+            st.markdown(
+                "Option alternative si vous voulez utiliser vos propres modèles Ollama "
+                "installés sur votre PC."
+            )
+            st.markdown("---")
+            st.markdown("#### Étape 1 — Installer Ollama + modèle sur votre PC")
+            _e1w, _e1l = st.columns(2)
+            with _e1w:
+                st.markdown("**Windows**")
+                st.link_button("⬇️ Télécharger Ollama pour Windows",
+                               "https://ollama.com/download/OllamaSetup.exe",
+                               use_container_width=True)
+            with _e1l:
+                st.markdown("**Mac / Linux** — dans un terminal :")
+                st.code("curl -fsSL https://ollama.com/install.sh | sh", language="bash")
+            st.markdown("Puis téléchargez un modèle *(terminal)* :")
+            st.code("ollama pull qwen2.5:3b", language="bash")
+            st.markdown("---")
+            st.markdown("#### Étape 2 — Exposer Ollama avec ngrok")
+            _ng1, _ng2 = st.columns([3, 2])
+            with _ng1:
+                st.link_button("Créer un compte ngrok gratuit",
+                               "https://dashboard.ngrok.com/signup", use_container_width=True)
+                st.link_button("📋 Copier mon Authtoken ngrok",
+                               "https://dashboard.ngrok.com/get-started/your-authtoken",
+                               use_container_width=True)
+                st.markdown("Dans un terminal *(l'un après l'autre)* :")
+                st.code("ngrok config add-authtoken COLLEZ_VOTRE_TOKEN_ICI", language="bash")
+                st.code("ngrok http 11434 --host-header=localhost", language="bash")
+                st.markdown(
+                    "Copiez l'adresse **Forwarding** qui s'affiche :\n\n"
+                    "```\nForwarding  https://xxxx.ngrok-free.app\n```"
+                )
+            with _ng2:
+                st.warning(
+                    "**Laissez cette fenêtre ouverte** pendant l'utilisation de Miny.",
+                    icon="⚠️",
+                )
+            st.markdown("---")
+            st.markdown("#### Étape 3 — Relier à Miny")
+            st.link_button("Ouvrir les Secrets Streamlit",
+                           "https://share.streamlit.io", use_container_width=False)
+            st.markdown("Application → **⋯** → **Settings** → **Secrets** :")
+            st.code('OLLAMA_HOST = "https://xxxx.ngrok-free.app"', language="toml")
+            st.markdown("Cliquez **Save** puis revenez ici pour tester la connexion.")
         st.markdown("---")
 
     elif IS_WINDOWS:
@@ -411,30 +419,40 @@ except Exception:
 
 st.divider()
 
-# ── OLLAMA_HOST (Cloud uniquement) ────────────────────────────────────────────
+# ── Statut LLM Cloud ──────────────────────────────────────────────────────────
 if IS_STREAMLIT_CLOUD:
-    st.markdown("### ☁️ Connexion Ollama (Cloud)")
-    _host_configured = st.secrets.get("OLLAMA_HOST", "") if hasattr(st, "secrets") else ""
-    try:
-        _host_configured = st.secrets.get("OLLAMA_HOST", "")
-    except Exception:
-        _host_configured = ""
+    st.markdown("### ☁️ Connexion IA (Cloud)")
 
-    if _host_configured:
-        _host_display = _host_configured.rstrip("/")
+    try:
+        _groq_key      = st.secrets.get("GROQ_API_KEY", "")
+        _host_secret   = st.secrets.get("OLLAMA_HOST", "")
+    except Exception:
+        _groq_key, _host_secret = "", ""
+
+    if _groq_key and groq_est_disponible():
+        st.success(
+            "**Groq API** connectée — modèles IA disponibles.\n\n"
+            f"Modèle actif : **{active_model_name()}**",
+            icon="✅",
+        )
+    elif _groq_key and not groq_est_disponible():
+        st.warning(
+            "**GROQ_API_KEY** présente mais le SDK `groq` n'est pas installé.\n\n"
+            "Vérifiez que `groq>=0.9.0` est dans `requirements.txt` et redéployez.",
+            icon="⚠️",
+        )
+    elif _host_secret:
+        _host_display = _host_secret.rstrip("/")
         if _disponible:
             st.success(
-                f"**OLLAMA_HOST** configuré : `{_host_display}`\n\n"
-                f"Connexion active — modèle : **{_model_actif}**",
+                f"**OLLAMA_HOST** configuré : `{_host_display}` — connexion active.\n\n"
+                f"Modèle actif : **{_model_actif}**",
                 icon="✅",
             )
         else:
             st.warning(
-                f"**OLLAMA_HOST** configuré : `{_host_display}`\n\n"
-                "Ollama ne répond pas à cette adresse. Vérifiez que :\n"
-                "- Ollama tourne sur votre PC (`ollama serve` dans un terminal)\n"
-                "- ngrok est actif (`ngrok http 11434 --host-header=localhost`)\n"
-                "- L'adresse ngrok correspond bien à celle dans les Secrets",
+                f"**OLLAMA_HOST** configuré : `{_host_display}` mais Ollama ne répond pas.\n\n"
+                "Vérifiez qu'Ollama et ngrok tournent sur votre PC.",
                 icon="⚠️",
             )
             if st.button("🔍 Tester la connexion", key="test_ollama_host"):
@@ -445,20 +463,15 @@ if IS_STREAMLIT_CLOUD:
                     st.rerun()
                 else:
                     st.error(
-                        "Impossible de joindre Ollama.\n\n"
-                        "Relancez ngrok et mettez à jour l'URL dans les Secrets Streamlit "
-                        "*(l'URL ngrok change à chaque démarrage en version gratuite)*."
+                        "Impossible de joindre Ollama. "
+                        "Relancez ngrok et mettez à jour l'URL dans les Secrets Streamlit."
                     )
     else:
         st.error(
-            "**OLLAMA_HOST non configuré** — les modes IA (🔢 🏭 💬 🤖) sont désactivés.\n\n"
-            "Pour activer l'IA, suivez le **Guide de démarrage** ci-dessus (Étapes 1–3), "
-            "puis ajoutez dans les Secrets Streamlit :\n\n"
-            "```toml\nOLLAMA_HOST = \"https://xxxx.ngrok-free.app\"\n```",
+            "**Aucune clé IA configurée** — les modes 🔢 🏭 💬 🤖 sont désactivés.\n\n"
+            "Suivez le **Guide de démarrage** ci-dessus pour activer l'IA.",
             icon="☁️",
         )
-        st.link_button("Ouvrir les Secrets Streamlit", "https://share.streamlit.io",
-                       use_container_width=False)
 
     st.divider()
 
