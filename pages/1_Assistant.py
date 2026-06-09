@@ -907,8 +907,6 @@ if prompt:
             # Calcul direct sans LLM : pourcentages, opérations simples
             _direct_math = _handle_math(_effective_prompt.lower())
             if _direct_math:
-                st.markdown('<span class="badge-math">🔢 Calcul</span>',
-                            unsafe_allow_html=True)
                 _render_assistant(_direct_math, "math")
                 answer = _direct_math
                 rtype  = "math"

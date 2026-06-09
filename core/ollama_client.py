@@ -452,7 +452,8 @@ def appeler_ollama(
 
     # ── Backend Groq (priorité si clé disponible) ────────────────────────────
     if groq_est_disponible():
-        groq_model = modele or GROQ_PRIMARY_MODEL
+        # Les noms de modèles Ollama (qwen2.5:3b, phi3:mini…) ne sont pas valides sur Groq
+        groq_model = GROQ_PRIMARY_MODEL
         if stream:
             return _stream_groq(messages, groq_model, max_tokens, temperature)
         else:
