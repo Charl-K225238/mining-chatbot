@@ -95,40 +95,71 @@ with st.expander(
 
     if IS_STREAMLIT_CLOUD:
         # ── Guide Streamlit Cloud ──────────────────────────────────────────────
-        st.markdown("### 🌐 Guide — Déploiement Streamlit Cloud")
-        st.markdown(
-            "Miny tourne sur un serveur Linux géré par Streamlit. "
-            "Ollama **ne peut pas s'y installer** — il doit tourner sur votre machine "
-            "et être accessible via une URL publique."
+        st.markdown("### 🌐 Guide — Connexion depuis Streamlit Cloud")
+        st.info(
+            "Miny tourne sur un serveur Streamlit qui n'a pas accès à votre PC. "
+            "Pour activer les modes LLM, vous devez :\n\n"
+            "**1.** Faire tourner Ollama sur votre PC *(gratuit)*\n\n"
+            "**2.** Créer un tunnel public vers votre PC *(ngrok, gratuit)*\n\n"
+            "**3.** Donner l'URL du tunnel à Miny via les Secrets Streamlit",
+            icon="☁️",
         )
 
         st.markdown("---")
-        st.markdown("#### Étape 1 — Installer Ollama sur votre PC Windows/Mac/Linux")
-        st.markdown(
-            "- **Windows** : téléchargez l'installateur → **[ollama.com](https://ollama.com)**\n"
-            "- **Mac/Linux** : `curl -fsSL https://ollama.com/install.sh | sh`\n\n"
-            "Puis téléchargez un modèle :"
-        )
-        st.code("ollama pull qwen2.5:3b", language="bash")
-
-        st.markdown("---")
-        st.markdown("#### Étape 2 — Exposer Ollama via ngrok (option gratuite)")
-        _c1, _c2 = st.columns(2)
-        with _c1:
+        st.markdown("#### Étape 1 — Installer Ollama sur votre PC")
+        _e1a, _e1b = st.columns(2)
+        with _e1a:
+            st.markdown("**Windows**")
             st.markdown(
-                "**1.** Créez un compte gratuit → **[ngrok.com](https://ngrok.com)**\n\n"
-                "**2.** Installez ngrok et authentifiez-le\n\n"
-                "**3.** Lancez le tunnel :"
+                "**1.** Téléchargez l'installateur → **[ollama.com](https://ollama.com)**\n\n"
+                "**2.** Lancez-le, suivez les étapes (2 min)\n\n"
+                "**3.** Ollama démarre — icône dans la barre des tâches"
             )
+        with _e1b:
+            st.markdown("**Mac / Linux**")
+            st.code("curl -fsSL https://ollama.com/install.sh | sh", language="bash")
+        st.markdown("Puis téléchargez le modèle recommandé *(dans un terminal)* :")
+        st.code("ollama pull qwen2.5:3b", language="bash")
+        st.caption("Durée : 5–15 min selon votre connexion. Modèle léger (~2 Go), fonctionne avec 4 Go de RAM.")
+
+        st.markdown("---")
+        st.markdown("#### Étape 2 — Créer un tunnel public avec ngrok")
+        st.markdown(
+            "ngrok crée une URL publique qui redirige vers votre Ollama local. "
+            "C'est gratuit et prend 3 minutes."
+        )
+        _ng1, _ng2 = st.columns([3, 2])
+        with _ng1:
+            st.markdown(
+                "**1.** Créez un compte gratuit → **[dashboard.ngrok.com](https://dashboard.ngrok.com)**\n\n"
+                "**2.** Dans le dashboard, copiez votre **Authtoken** (onglet *Your Authtoken*)\n\n"
+                "**3.** Téléchargez ngrok → **[ngrok.com/download](https://ngrok.com/download)** "
+                "*(installateur Windows ou archive Linux/Mac)*\n\n"
+                "**4.** Ouvrez un terminal *(PowerShell sur Windows)* et authentifiez-le :"
+            )
+            st.code("ngrok config add-authtoken VOTRE_TOKEN_ICI", language="bash")
+            st.markdown("**5.** Lancez le tunnel Ollama :")
             st.code("ngrok http 11434 --host-header=localhost", language="bash")
-            st.markdown("**4.** Copiez l'URL https fournie par ngrok")
-        with _c2:
+            st.markdown(
+                "**6.** Dans la fenêtre ngrok qui s'ouvre, copiez la ligne **Forwarding** :\n\n"
+                "```\nForwarding  https://abc123.ngrok-free.app → http://localhost:11434\n```\n\n"
+                "Copiez uniquement la partie `https://abc123.ngrok-free.app`"
+            )
+        with _ng2:
             st.info(
+                "**⚠️ Laissez la fenêtre ngrok ouverte** tant que vous utilisez Miny. "
+                "Fermer ngrok coupe la connexion.\n\n"
                 "**Alternatives à ngrok :**\n"
-                "- Cloudflare Tunnel (gratuit, stable)\n"
+                "- Cloudflare Tunnel *(plus stable, gratuit)*\n"
                 "- Tailscale Funnel\n"
                 "- VPS avec port 11434 ouvert",
                 icon="🔗",
+            )
+            st.info(
+                "**L'URL change à chaque relance ngrok** *(version gratuite)*.\n\n"
+                "Pour une URL fixe, souscrivez au plan payant ngrok "
+                "ou utilisez Cloudflare Tunnel.",
+                icon="ℹ️",
             )
 
         st.markdown("---")
@@ -136,13 +167,17 @@ with st.expander(
         st.markdown(
             "**1.** Allez sur **[share.streamlit.io](https://share.streamlit.io)**\n\n"
             "**2.** Votre app → menu **⋯** → **Settings** → **Secrets**\n\n"
-            "**3.** Ajoutez :"
+            "**3.** Ajoutez la ligne suivante en remplaçant l'URL par celle de ngrok :"
         )
         st.code('OLLAMA_HOST = "https://abc123.ngrok-free.app"', language="toml")
-        st.caption("Remplacez l'URL par celle de votre tunnel.")
         st.markdown(
-            "**4.** Cliquez **Save** — l'app redémarre automatiquement\n\n"
-            "**5.** Revenez ici et cliquez **🔍 Vérifier Ollama** ci-dessous"
+            "**4.** Cliquez **Save** — l'app redémarre automatiquement (30 s)\n\n"
+            "**5.** Revenez sur cette page et cliquez **🔍 Vérifier Ollama** ci-dessous"
+        )
+        st.success(
+            "Une fois configuré, Miny se connecte à votre Ollama local via le tunnel "
+            "— les 4 modes LLM deviennent disponibles.",
+            icon="✅",
         )
         st.markdown("---")
 
@@ -155,40 +190,40 @@ with st.expander(
         )
         st.markdown("---")
 
-        st.markdown("#### Étape 1 — Installer Ollama (5 min)")
-        c_dl, c_info = st.columns([2, 3])
+        st.markdown("#### Étape 1 — Installer Ollama (2 min)")
+        c_dl, c_info = st.columns([3, 2])
         with c_dl:
             st.markdown(
-                "**1.** Rendez-vous sur **[ollama.com](https://ollama.com)**\n\n"
-                "**2.** Cliquez **Download for Windows**\n\n"
-                "**3.** Lancez l'installateur et suivez les étapes\n\n"
-                "**4.** Ollama démarre en arrière-plan — "
-                "une icône apparaît dans la barre des tâches"
+                "**1.** Téléchargez l'installateur → **[ollama.com](https://ollama.com)**  \n"
+                "*(bouton Download for Windows en haut de la page)*\n\n"
+                "**2.** Ouvrez le fichier téléchargé et suivez les étapes — "
+                "cliquez simplement *Suivant / Installer*\n\n"
+                "**3.** Ollama démarre automatiquement — "
+                "une petite icône 🦙 apparaît dans la barre des tâches (en bas à droite)"
             )
         with c_info:
             st.info(
-                "Vos données ne quittent jamais votre PC.\n\n"
-                "Après installation, revenez ici pour l'étape 2.",
+                "🔒 **Vos données ne quittent jamais votre PC.**\n\n"
+                "Après l'installation, **rechargez cette page** (touche F5) "
+                "puis passez à l'étape 2.",
                 icon="🔒",
             )
         st.markdown("---")
 
-        st.markdown("#### Étape 2 — Choisir et télécharger un modèle")
-        st.caption(
-            "RAM disponible : **Ctrl+Alt+Supr** → Gestionnaire des tâches → Performances → Mémoire"
+        st.markdown("#### Étape 2 — Télécharger un modèle IA")
+        st.markdown(
+            "Vérifiez d'abord votre RAM disponible : "
+            "**Ctrl+Alt+Supr** → *Gestionnaire des tâches* → onglet *Performances* → *Mémoire*"
         )
         st.markdown("""
-| RAM | Modèle recommandé | Taille |
-|-----|-------------------|--------|
-| **< 4 Go** | `phi3:mini` | ~2,2 Go |
-| **4–8 Go** | `qwen2.5:3b` *(défaut)* | ~2,0 Go |
-| **8–16 Go** | `qwen2.5:7b` | ~4,7 Go |
-| **> 16 Go** | `qwen2.5:14b` | ~8,7 Go |
+| RAM disponible | Modèle recommandé | Taille à télécharger |
+|---|---|---|
+| **Moins de 4 Go** | `phi3:mini` | ~2,2 Go |
+| **4 à 8 Go** | `qwen2.5:3b` *(recommandé)* | ~2,0 Go |
+| **8 à 16 Go** | `qwen2.5:7b` | ~4,7 Go |
+| **Plus de 16 Go** | `qwen2.5:14b` | ~8,7 Go |
 """)
-        st.markdown("**Télécharger via PowerShell** *(Windows → `powershell` → Entrée)* :")
-        st.code("ollama pull qwen2.5:3b", language="bash")
-
-        st.markdown("**Ou directement depuis Miny** :")
+        st.markdown("**Cliquez sur le bouton correspondant à votre RAM pour télécharger le modèle :**")
         _bc1, _bc2, _bc3, _bc4 = st.columns(4)
         for _col, _model, _ram in [
             (_bc1, "phi3:mini",    "< 4 Go"),
@@ -201,14 +236,18 @@ with st.expander(
                 if st.button(f"⬇️ {_model}", key=f"guide_dl_{_model}",
                              use_container_width=True):
                     if not _disponible:
-                        st.warning("Démarrez Ollama d'abord (étape 1).")
+                        st.warning(
+                            "Ollama n'est pas encore détecté.\n\n"
+                            "Si vous venez de l'installer : **rechargez cette page (F5)** "
+                            "puis cliquez à nouveau sur ce bouton."
+                        )
                     else:
                         assurer_modele_disponible(_model, placeholder=st.empty())
         st.markdown("---")
 
         st.success(
-            "Miny démarre Ollama automatiquement dès votre première question. "
-            "Vous n'avez rien d'autre à configurer.",
+            "✅ **C'est tout !** Miny détecte et démarre Ollama automatiquement. "
+            "Après le téléchargement du modèle, revenez dans l'Assistant et posez votre première question.",
             icon="✅",
         )
         st.markdown("---")
@@ -223,25 +262,25 @@ with st.expander(
         st.markdown("---")
 
         st.markdown("#### Étape 1 — Installer Ollama")
+        st.markdown("Ouvrez un terminal et collez la commande suivante :")
         st.code("curl -fsSL https://ollama.com/install.sh | sh", language="bash")
-        st.caption("Ollama sera installé dans /usr/local/bin/ollama et démarré comme service système.")
+        st.info(
+            "L'installation place Ollama dans `/usr/local/bin/ollama` et le démarre "
+            "**automatiquement comme service système** — vous n'avez pas besoin de le lancer manuellement.\n\n"
+            "**Mac** : si curl n'est pas disponible, téléchargez l'installateur → **[ollama.com](https://ollama.com)**",
+            icon="ℹ️",
+        )
 
-        st.markdown("#### Étape 2 — Vérifier qu'Ollama est démarré")
-        st.code("ollama list", language="bash")
-        st.caption("Si la commande retourne une liste (vide ou non), Ollama est actif.")
-
-        st.markdown("#### Étape 3 — Télécharger un modèle")
+        st.markdown("#### Étape 2 — Télécharger un modèle IA")
         st.markdown("""
-| RAM | Modèle recommandé | Commande |
-|-----|-------------------|----------|
-| **< 4 Go** | `phi3:mini` | `ollama pull phi3:mini` |
-| **4–8 Go** | `qwen2.5:3b` *(défaut)* | `ollama pull qwen2.5:3b` |
-| **8–16 Go** | `qwen2.5:7b` | `ollama pull qwen2.5:7b` |
-| **> 16 Go** | `qwen2.5:14b` | `ollama pull qwen2.5:14b` |
+| RAM disponible | Modèle recommandé | Commande |
+|---|---|---|
+| **Moins de 4 Go** | `phi3:mini` | `ollama pull phi3:mini` |
+| **4 à 8 Go** | `qwen2.5:3b` *(recommandé)* | `ollama pull qwen2.5:3b` |
+| **8 à 16 Go** | `qwen2.5:7b` | `ollama pull qwen2.5:7b` |
+| **Plus de 16 Go** | `qwen2.5:14b` | `ollama pull qwen2.5:14b` |
 """)
-        st.code("ollama pull qwen2.5:3b", language="bash")
-
-        st.markdown("**Ou directement depuis Miny** :")
+        st.markdown("**Cliquez sur le bouton correspondant à votre RAM :**")
         _bc1, _bc2, _bc3, _bc4 = st.columns(4)
         for _col, _model, _ram in [
             (_bc1, "phi3:mini",    "< 4 Go"),
@@ -254,7 +293,12 @@ with st.expander(
                 if st.button(f"⬇️ {_model}", key=f"guide_dl_{_model}",
                              use_container_width=True):
                     if not _disponible:
-                        st.warning("Démarrez Ollama d'abord (`ollama serve`).")
+                        st.warning(
+                            "Ollama n'est pas encore détecté.\n\n"
+                            "Si vous venez de l'installer : **rechargez cette page** "
+                            "puis cliquez à nouveau sur ce bouton.\n\n"
+                            "Si Ollama est installé mais inactif, lancez : `ollama serve`"
+                        )
                     else:
                         assurer_modele_disponible(_model, placeholder=st.empty())
         st.markdown("---")
