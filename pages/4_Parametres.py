@@ -12,12 +12,26 @@ sys.path.insert(0, str(ROOT))
 import streamlit as st
 
 from core.data_loader import get_db, get_index, load_css
-from core.ollama_client import (
-    is_available, active_model_name,
-    lister_modeles_disponibles, assurer_modele_disponible, assurer_ollama_disponible,
-    ollama_est_disponible, trouver_ollama_exe, is_remote_ollama,
-    IS_WINDOWS, IS_STREAMLIT_CLOUD,
-)
+try:
+    from core.ollama_client import (
+        is_available, active_model_name,
+        lister_modeles_disponibles, assurer_modele_disponible, assurer_ollama_disponible,
+        ollama_est_disponible, trouver_ollama_exe, is_remote_ollama,
+        IS_WINDOWS, IS_STREAMLIT_CLOUD,
+    )
+    _OLLAMA_IMPORTABLE = True
+except ImportError:
+    _OLLAMA_IMPORTABLE = False
+    IS_WINDOWS = False
+    IS_STREAMLIT_CLOUD = True
+    def is_available(*a, **kw): return False          # noqa: E306
+    def active_model_name(*a, **kw): return "—"
+    def lister_modeles_disponibles(*a, **kw): return []
+    def assurer_modele_disponible(*a, **kw): return False
+    def assurer_ollama_disponible(*a, **kw): return False
+    def ollama_est_disponible(*a, **kw): return False
+    def trouver_ollama_exe(*a, **kw): return None
+    def is_remote_ollama(*a, **kw): return False
 from src.db.connection import close as close_db
 from src.engine.query_router import rebuild_index
 from src.engine.clarification import CONSIGNES
