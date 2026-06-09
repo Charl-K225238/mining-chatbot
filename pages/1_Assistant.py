@@ -71,7 +71,7 @@ EXAMPLES_BY_CAT: dict[str, list[tuple[str, str]]] = {
         ("Bilan pannes 2023",          "Bilan des pannes en 2023"),
         ("Pannes direction 2023",      "Pannes de direction en 2023"),
         ("Tombereaux — classement",    "Quels tombereaux ont le plus de pannes ?"),
-        ("Pannes trencher TRS 296",    "Pannes de la trencher TRS N°296"),
+        ("Pannes TRS N°296",           "Pannes de la trencher TRS N°296"),
         ("Types de pannes 2024",       "Quels types de pannes en 2024 ?"),
         ("Top 5 engins tonnage",       "Top 5 engins par tonnage en 2026"),
     ],
@@ -398,7 +398,7 @@ def afficher_clarification(
         f'<div class="clarif-box"><b>💡 {_msg}</b></div>',
         unsafe_allow_html=True,
     )
-    cols = st.columns(min(len(questions_suivi), 3))
+    cols = st.columns(min(len(questions_suivi), 4))
     for i, s in enumerate(questions_suivi):
         with cols[i % len(cols)]:
             st.button(
@@ -796,12 +796,12 @@ if not _sidebar_s.get("error") and _sidebar_s.get("freshness"):
 st.caption("Pas d'idée par où commencer ? Voici quelques questions types :")
 if _ollama_dispo:
     st.caption(
-        "⚡ *Tonnage par mois 2026* · *Pannes TRS 296* · *Carburant 2024*  "
+        "⚡ *Tonnage par mois 2026* · *Pannes TRS N°296* · *Carburant 2024*  "
         "· 🔢 *15% de 3500* · 🏭 *Normes ISO mine* · 💬 *Bonjour*"
     )
 else:
     st.caption(
-        "⚡ *Tonnage par mois 2026* · *Pannes TRS 296* · *Carburant 2024*"
+        "⚡ *Tonnage par mois 2026* · *Pannes TRS N°296* · *Carburant 2024*"
     )
     st.caption(
         "🔢 *15% de 3500* · 🏭 *Normes ISO mine* · 💬 *Bonjour*  "
@@ -840,16 +840,37 @@ if prompt:
     )
 
     # 1. Suggestions contextuelles du router
-    if not _smart_blocked and route.get("questions_suivi"):
-        afficher_clarification(route["questions_suivi"], route["clarif_type"])
+    # domaine_inconnu est exclu ici : l'analytics peut répondre même quand le router
+    # ne reconnaît pas le domaine — afficher "je n'ai pas reconnu" avant la réponse
+    # serait contradictoire. Ce type de clarification est réservé à l'absence totale
+    # de réponse (gérée par _NO_ANSWER dans le pipeline LLM).
+    # question_large est inclus : c'est une guidance souple AVANT la réponse (non-bloquant).
+    if (not _smart_blocked
+            and route.get("questions_suivi")
+            and route.get("clarif_type") != "domaine_inconnu"):
+        _clarif_msg = None
+        if route.get("clarif_type") == "question_large":
+            _ctx_intentions = route.get("ctx", {}).get("intentions", [])
+            _ctx_annee      = route.get("ctx", {}).get("periode", {}).get("annee")
+            _verb = "résumer" if "resumer" in _ctx_intentions else \
+                    "analyser" if "analyser" in _ctx_intentions else "consulter"
+            _clarif_msg = (
+                f"Quel aspect souhaitez-vous {_verb} en {_ctx_annee} ?"
+                if _ctx_annee
+                else f"Quel domaine souhaitez-vous {_verb} ?"
+            )
+        afficher_clarification(route["questions_suivi"], route["clarif_type"],
+                               message=_clarif_msg)
 
     # 2. Ambiguïté sémantique — seulement si smart_clarification n'a rien affiché
     #    (évite deux cartes de clarification overlappantes sur la même ambiguïté)
     if not _smart_showed:
         _afficher_clarification_semantique(_effective_prompt)
 
-    # 3. Conseils qualité
-    if not _smart_blocked:
+    # 3. Conseils qualité — supprimés si une guidance domaine est déjà visible
+    # (question_large affiche déjà 4 boutons de domaine : le conseil "précisez le domaine"
+    # serait redondant et moins utile que les boutons cliquables)
+    if not _smart_blocked and route.get("clarif_type") != "question_large":
         _afficher_consignes(_verif_qualite(_effective_prompt))
 
     with st.chat_message("user"):
@@ -940,6 +961,17 @@ if prompt:
                     silent_switch=True,
                 )
                 rtype  = "llm"
+
+        # ── Guidance domaine (question_large) — pas de réponse à générer ─────
+        # Le pipeline "clarification" tombe sinon dans le else analytique, qui
+        # retourne rien, et déclenche Ollama en fallback (lent + réponse inventée).
+        elif route.get("clarif_type") == "question_large":
+            st.markdown(
+                "_Choisissez un domaine ci-dessus. "
+                "Pour d'autres exemples, consultez **💡 Questions exemples** en haut de page._"
+            )
+            answer = ""
+            rtype  = "clarification"
 
         else:
             # ── Pipeline analytique (DuckDB — pas d'Ollama requis) ────────

@@ -1134,6 +1134,9 @@ def _engin_norm_expr() -> str:
 def handle_tombereaux(con, ql: str) -> str | None:
     if "tombereau" not in ql:
         return None
+    # Céder la main à handle_carburant pour les questions carburant+engin
+    if any(w in ql for w in ["carburant", "gasoil", "diesel", "litre", "consomm", "citerne"]):
+        return None
 
     year = _year(ql)
     lbl  = _label(year, None, None, None)
@@ -1514,7 +1517,18 @@ def handle_carburant(con, ql: str, year, months=None, quarter=None,
                                             "par chargeuse", "par type", "par vehicule",
                                             "quelle machine", "quel engin",
                                             "chaque engin", "chaque machine"])
-    wants_depot    = any(w in ql for w in ["depotage", "approvisionnement", "recharge", "ravitaillement"])
+    wants_depot    = any(w in ql for w in ["depotage", "approvisionnement", "approvisionne", "recharge", "ravitaillement"])
+
+    # Filtre optionnel sur un type d'engin spécifique
+    _ENGIN_TYPES = [
+        ("chargeuse", "CHARGEUSE"), ("tombereau", "TOMBEREAU"), ("bulldozer", "BULLDOZER"),
+        ("bull",      "BULL"),      ("grader",    "GRADER"),    ("tracteur",  "TRACTEUR"),
+        ("groupe",    "GROUPE"),    ("trencher",  "TRENCHER"),  ("benne",     "BENNE"),
+        ("compresseur", "COMPRESSEUR"), ("pelle",   "PC "),
+    ]
+    _engin_type = next((up for kw, up in _ENGIN_TYPES if kw in ql), None)
+    _engin_extra = (f' AND UPPER(TRIM("{CARB_ENGIN}")) LIKE \'%{_engin_type}%\''
+                    if _engin_type else "")
 
     # Approvisionnement citerne (depotage)
     if wants_depot:
@@ -1524,17 +1538,21 @@ def handle_carburant(con, ql: str, year, months=None, quarter=None,
         val_d = con.execute(f'SELECT SUM("{CARB_DEPOT}") FROM {CARB_TABLE} {wd}').fetchone()[0] or 0
         return f"Approvisionnement citerne ({lbl}) : {val_d:,.0f} L\n_📋 {CARB_TABLE}_"
 
-    # Répartition par engin
-    if wants_by_engin:
+    # Répartition par engin (ou par type d'engin si précisé)
+    if wants_by_engin or _engin_type:
         df = _q(con, f"""
             SELECT "{CARB_ENGIN}" AS engin, SUM("{CARB_QTY}") AS litres
-            FROM {CARB_TABLE} {carb_w}
+            FROM {CARB_TABLE} {carb_w}{_engin_extra}
             GROUP BY 1 ORDER BY 2 DESC
         """)
         if df.empty:
-            return f"Aucune donnée carburant pour {lbl}.\n_📋 {CARB_TABLE} · Petro Ivoire / Iveqi_"
+            _hint = f" de type {_engin_type.title()}" if _engin_type else ""
+            return (f"Aucun engin{_hint} trouvé pour {lbl}.\n"
+                    f"_📋 {CARB_TABLE} · Petro Ivoire / Iveqi_")
         rows = [(r['engin'], f"{r.litres:,.0f} L") for _, r in df.iterrows()]
-        return (_fmt_table(f"Carburant servi par engin ({lbl})", rows, ["Engin", "Litres"])
+        _title = (f"Carburant servi · {_engin_type.title()} ({lbl})"
+                  if _engin_type else f"Carburant servi par engin ({lbl})")
+        return (_fmt_table(_title, rows, ["Engin", "Litres"])
                 + f"\n_📋 {CARB_TABLE} · Petro Ivoire / Iveqi_")
 
     # Ventilation mensuelle
@@ -1589,7 +1607,7 @@ def handle_observations(con, ql: str, year) -> str | None:
     # Ne pas voler les questions de consommation carburant à handle_carburant
     if found_kw == "Carburant" and not has_panne_kw and any(
         w in ql for w in ["consomm", "litre", "citerne", "petro", "iveqi",
-                           "par mois", "par engin", "depotage", "approvisionnement"]
+                           "par mois", "par engin", "depotage", "approvisionnement", "approvisionne"]
     ):
         return None
 

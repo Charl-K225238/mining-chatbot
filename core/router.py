@@ -135,12 +135,19 @@ def _router_interne(question: str, tables_disponibles: list[str] | None) -> dict
     # ── 1. Question trop courte ET aucun domaine identifiable ────────────────
     # (nb_mots < 3 avec un domaine connu → on continue vers "période manquante")
     if nb_mots < 3 and not domaines:
+        # "Bilan 2024", "Résumé 2025" : courte mais intention data claire → guidance domaine
+        if periode.get("annee") and any(i in intentions for i in ("resumer", "analyser", "calculer")):
+            return _clarif("question_large", ctx, _suivi_domaine_inconnu(question))
         return _clarif("trop_courte", ctx, _suivi_trop_courte(question))
 
     # ── 2. Domaine inconnu ────────────────────────────────────────────────────
     if not domaines:
-        # Intention purement LLM → RAG direct
-        if any(i in intentions for i in ("analyser", "prioriser", "resumer", "verifier")):
+        # Intention résumé/analyse sans domaine : affiche guidance domaine (non-bloquant)
+        # Note : "verifier" reste en LLM (questions générales type "y a-t-il…")
+        if any(i in intentions for i in ("resumer", "analyser", "prioriser")):
+            return _clarif("question_large", ctx, _suivi_domaine_inconnu(question))
+        # Intention purement LLM (verifier, demander générique) → RAG direct
+        if any(i in intentions for i in ("verifier",)):
             return _llm(ctx, intentions[0] if intentions else "analyser")
         return _clarif("domaine_inconnu", ctx, _suivi_domaine_inconnu(question))
 

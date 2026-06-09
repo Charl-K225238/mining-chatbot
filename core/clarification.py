@@ -56,6 +56,7 @@ MESSAGES_CLARIF: dict[str, str] = {
     "domaine_inconnu":    "Je n'ai pas reconnu le domaine. Essayez l'une de ces catégories :",
     "table_introuvable":  "Les données demandées ne sont pas chargées dans la base.",
     "trop_courte":        "Question trop courte. Voici des exemples complets :",
+    "question_large":     "Question large — quel domaine vous intéresse ?",
 }
 
 
@@ -87,11 +88,13 @@ def generer_questions_suivi(
     if clarif_type == "table_ambigue":
         return _gen_table_ambigue(question, tables_candidates)
     if clarif_type == "domaine_inconnu":
-        return _gen_domaine_inconnu()
+        return _gen_domaine_inconnu(ctx)
     if clarif_type == "table_introuvable":
         return _gen_table_introuvable()
     if clarif_type == "trop_courte":
-        return _gen_trop_courte()
+        return _gen_trop_courte(ctx)
+    if clarif_type == "question_large":
+        return _gen_question_large(ctx)
     return []
 
 
@@ -125,7 +128,9 @@ def verifier_qualite_prompt(question: str) -> list[str]:
     # 2. Domaine — seulement si aucun domaine identifié (question vraiment opaque).
     if not domaines:
         echecs.append(
-            "Précisez **le domaine** : *tonnage*, *pannes*, *carburant*, *PGES*…"
+            "Domaine non reconnu — reformulez en citant un sujet minier. "
+            "Exemples : *« Tonnage par mois en 2024 »*, "
+            "*« Bilan des pannes en 2023 »*, *« Carburant par engin en 2024 »*."
         )
 
     # 3. Longueur — utiliser les mots de la question originale car la normalisation
@@ -186,13 +191,14 @@ def _gen_table_ambigue(question: str, tables: list[str] | None) -> list[dict]:
     return result
 
 
-def _gen_domaine_inconnu() -> list[dict]:
-    """Propose les 3 catégories principales du BI minier."""
+def _gen_domaine_inconnu(ctx: dict | None = None) -> list[dict]:
+    """Propose les 3 catégories principales du BI minier, en utilisant l'année détectée."""
+    _annee = (ctx or {}).get("periode", {}).get("annee") or _ANNEE_EN_COURS
     return [
         {
             "icone": "📦",
             "label": "Production / Tonnage",
-            "prompt": f"Tonnage descendu par mois en {_ANNEE_EN_COURS}",
+            "prompt": f"Tonnage descendu par mois en {_annee}",
         },
         {
             "icone": "⚠️",
@@ -203,6 +209,33 @@ def _gen_domaine_inconnu() -> list[dict]:
             "icone": "📋",
             "label": "PGES / HSE",
             "prompt": "Actions PGES non réalisées",
+        },
+    ]
+
+
+def _gen_question_large(ctx: dict | None = None) -> list[dict]:
+    """4 domaines principaux avec l'année détectée — pour les questions bilan/résumé/analyse."""
+    _annee = (ctx or {}).get("periode", {}).get("annee") or _ANNEE_EN_COURS
+    return [
+        {
+            "icone": "📦",
+            "label": f"Production {_annee}",
+            "prompt": f"Tonnage descendu par mois en {_annee}",
+        },
+        {
+            "icone": "⚡",
+            "label": f"Carburant {_annee}",
+            "prompt": f"Consommation carburant par engin en {_annee}",
+        },
+        {
+            "icone": "⚠️",
+            "label": f"Pannes {_annee}",
+            "prompt": f"Bilan des pannes en {_annee}",
+        },
+        {
+            "icone": "🎯",
+            "label": f"Objectifs {_annee}",
+            "prompt": f"Taux de réalisation des objectifs en {_annee}",
         },
     ]
 
@@ -223,13 +256,14 @@ def _gen_table_introuvable() -> list[dict]:
     ]
 
 
-def _gen_trop_courte() -> list[dict]:
+def _gen_trop_courte(ctx: dict | None = None) -> list[dict]:
     """3 exemples complets et cliquables représentant les 3 domaines principaux."""
+    _annee = (ctx or {}).get("periode", {}).get("annee") or _ANNEE_EN_COURS
     return [
         {
             "icone": "📦",
-            "label": f"Tonnage {_ANNEE_EN_COURS}",
-            "prompt": f"Tonnage descendu par mois en {_ANNEE_EN_COURS}",
+            "label": f"Tonnage {_annee}",
+            "prompt": f"Tonnage descendu par mois en {_annee}",
         },
         {
             "icone": "⚠️",

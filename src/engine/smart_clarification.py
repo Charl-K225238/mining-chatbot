@@ -256,15 +256,15 @@ def _detect_spelling(question: str) -> tuple[str, list[tuple[str, str]]]:
 
     for word in words:
         word_norm = _norm(word)
-        # 1. Correspondance directe dans le dictionnaire de variantes
+        # 1. Déjà un terme canonique → pas de changement (priorité sur les variantes)
+        if word_norm in _CANONICAL_TERMS:
+            result.append(word)
+            continue
+        # 2. Correspondance directe dans le dictionnaire de variantes
         if word_norm in _VARIANT_TO_CORRECT:
             fixed = _VARIANT_TO_CORRECT[word_norm]
             result.append(fixed)
             changes.append((word, fixed))
-            continue
-        # 2. Déjà un terme canonique → pas de changement
-        if word_norm in _CANONICAL_TERMS:
-            result.append(word)
             continue
         # 3. Distance d'édition ≤ 2 sur les termes canoniques (mots ≥5 chars)
         # Pré-filtres : exclure les stop-words français et les mots sans préfixe commun

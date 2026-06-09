@@ -74,50 +74,82 @@ else:
 
     st.divider()
 
-    # Tables actives dans un accordéon (même style que Référentiels)
+    # Tables actives dans un accordéon — regroupées par fichier source
     if ops_d:
+        from src.ingest.config import TABLES as _INGEST_TABLES
+
+        # Grouper les tables par fichier source (ordre d'apparition préservé)
+        _file_groups: dict[str, list[tuple]] = {}
+        for _name, _nb, _last in ops_d:
+            _cfg = _INGEST_TABLES.get(_name)
+            _src = _cfg.file if _cfg else _name
+            _file_groups.setdefault(_src, []).append((_name, _nb, _last))
+
         with st.expander(f"📊 Tables opérationnelles ({len(ops_d)} tables)", expanded=False):
             _replace_target = st.session_state.get("replace_table_target")
-            cols_hdr = st.columns([3, 1, 2, 2])
-            cols_hdr[0].markdown("**Table**")
-            cols_hdr[1].markdown("**Lignes**")
-            cols_hdr[2].markdown("**Dernière date**")
-            cols_hdr[3].markdown("**Actions**")
-            for name, nb, last in ops_d:
-                c1, c2, c3, c4 = st.columns([3, 1, 2, 2])
-                c1.code(name, language=None)
-                c2.write(f"{nb:,}")
-                c3.write(f"📅 {last}")
-                if c4.button("🔄 Remplacer", key=f"repl_tbl_{name}",
-                             use_container_width=True):
-                    st.session_state["replace_table_target"] = name
-                    st.rerun()
 
-            # Zone de remplacement inline — affichée directement sous la liste, bien visible
+            for _src_file, _group in _file_groups.items():
+                _is_multi = len(_group) > 1
+                # Représentant du groupe : première table (suffisant pour la logique sibling)
+                _rep_name = _group[0][0]
+
+                if _is_multi:
+                    # ── Fichier multi-onglets : un seul bouton pour tout le groupe ──
+                    with st.container(border=True):
+                        _fh1, _fh2 = st.columns([5, 2])
+                        _fh1.markdown(
+                            f"📁 **`{_src_file}`** "
+                            f"<span style='color:grey;font-size:0.85em'>— {len(_group)} onglets</span>",
+                            unsafe_allow_html=True,
+                        )
+                        if _fh2.button("🔄 Remplacer ce fichier", key=f"repl_grp_{_src_file}",
+                                       use_container_width=True):
+                            st.session_state["replace_table_target"] = _rep_name
+                            st.rerun()
+                        # Sous-lignes sans boutons individuels
+                        for _i, (_tname, _tnb, _tlast) in enumerate(_group):
+                            _pfx = "└─" if _i == len(_group) - 1 else "├─"
+                            _r1, _r2, _r3 = st.columns([4, 2, 2])
+                            _r1.markdown(f"&nbsp;&nbsp;{_pfx} `{_tname}`", unsafe_allow_html=True)
+                            _r2.caption(f"{_tnb:,} lignes")
+                            _r3.caption(f"📅 {_tlast}")
+                else:
+                    # ── Table individuelle : ligne classique ──
+                    _name, _nb, _last = _group[0]
+                    _c1, _c2, _c3, _c4 = st.columns([3, 1, 2, 2])
+                    _c1.code(_name, language=None)
+                    _c2.write(f"{_nb:,}")
+                    _c3.write(f"📅 {_last}")
+                    if _c4.button("🔄 Remplacer", key=f"repl_tbl_{_name}",
+                                  use_container_width=True):
+                        st.session_state["replace_table_target"] = _name
+                        st.rerun()
+
+            # ── Zone de remplacement inline ───────────────────────────────────────
             if _replace_target and _replace_target in [n for n, _, _ in ops_d]:
-                from src.ingest.config import TABLES as _INGEST_TABLES
                 _target_cfg  = _INGEST_TABLES.get(_replace_target)
                 _source_file = _target_cfg.file if _target_cfg else None
-                _siblings    = [
+                _all_in_file = [
                     t for t, cfg in _INGEST_TABLES.items()
-                    if _source_file and cfg.file == _source_file and t != _replace_target
+                    if _source_file and cfg.file == _source_file
                 ]
+                _siblings = [t for t in _all_in_file if t != _replace_target]
 
-                st.markdown('<div id="replace-zone"></div>', unsafe_allow_html=True)
+                st.markdown("---")
 
                 if _siblings:
-                    _sibling_str = ", ".join(f"`{t}`" for t in _siblings)
+                    _all_str = ", ".join(f"`{t}`" for t in _all_in_file)
                     st.info(
                         f"**Fichier source : `{_source_file}`**\n\n"
-                        f"Ce fichier contient plusieurs onglets. L'importation mettra à jour "
-                        f"**toutes** ces tables simultanément : `{_replace_target}`, {_sibling_str}.\n\n"
-                        f"Importez le fichier **`{_source_file}`** ci-dessous.",
+                        f"Ce fichier contient {len(_all_in_file)} onglets. "
+                        f"L'importation mettra à jour **toutes** ces tables simultanément : {_all_str}.\n\n"
+                        f"Chargez le fichier **`{_source_file}`** ci-dessous.",
                         icon="ℹ️",
                     )
                 else:
                     st.info(
-                        f"**Vous remplacez `{_replace_target}`** (`{_source_file}`) — "
-                        f"choisissez le fichier Excel (.xlsx) et cliquez **⬆️ Importer**.",
+                        f"**Vous remplacez `{_replace_target}`** — fichier source : `{_source_file}`.\n\n"
+                        f"Choisissez le fichier Excel (.xlsx) et cliquez **⬆️ Importer**.",
                         icon="🔄",
                     )
 

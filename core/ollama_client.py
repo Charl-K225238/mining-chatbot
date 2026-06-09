@@ -58,7 +58,7 @@ _NUM_PREDICT: dict[str, int] = {
     "expert":   800,   # réponse structurée, max 400 mots
     "analyse":  700,
     "synthese": 600,
-    "math":     600,   # formules + étapes
+    "math":     250,   # résultat bref, pas de LaTeX ni d'introduction
     "libre":    400,
     "factuel":  400,
 }
