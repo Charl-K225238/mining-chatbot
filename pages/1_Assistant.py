@@ -27,6 +27,7 @@ from core.clarification import (
     MESSAGES_CLARIF,
 )
 from src.engine import analytics as _analytics
+from src.engine.analytics import handle_math as _handle_math
 from src.engine.clarification import verifier_qualite_prompt as _verif_semantique
 from src.engine.smart_clarification import (
     analyser_question as _smart_analyse,
@@ -903,10 +904,19 @@ if prompt:
 
         # ── 0a. Calcul mathématique ────────────────────────────────────────
         if _is_math_question(_effective_prompt):
-            if not _ollama_dispo:
+            # Calcul direct sans LLM : pourcentages, opérations simples
+            _direct_math = _handle_math(_effective_prompt.lower())
+            if _direct_math:
+                st.markdown('<span class="badge-math">🔢 Calcul</span>',
+                            unsafe_allow_html=True)
+                _render_assistant(_direct_math, "math")
+                answer = _direct_math
+                rtype  = "math"
+            elif not _ollama_dispo:
                 answer = _show_ollama_warning(str(len(st.session_state.messages)))
                 rtype  = "error"
             else:
+                # Calcul complexe (CAGR, ROI…) → LLM
                 st.markdown('<span class="badge-math">🔢 Calcul</span>',
                             unsafe_allow_html=True)
                 answer = _stream_llm(

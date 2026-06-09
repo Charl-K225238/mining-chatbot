@@ -408,6 +408,57 @@ except Exception:
 
 st.divider()
 
+# ── OLLAMA_HOST (Cloud uniquement) ────────────────────────────────────────────
+if IS_STREAMLIT_CLOUD:
+    st.markdown("### ☁️ Connexion Ollama (Cloud)")
+    _host_configured = st.secrets.get("OLLAMA_HOST", "") if hasattr(st, "secrets") else ""
+    try:
+        _host_configured = st.secrets.get("OLLAMA_HOST", "")
+    except Exception:
+        _host_configured = ""
+
+    if _host_configured:
+        _host_display = _host_configured.rstrip("/")
+        if _disponible:
+            st.success(
+                f"**OLLAMA_HOST** configuré : `{_host_display}`\n\n"
+                f"Connexion active — modèle : **{_model_actif}**",
+                icon="✅",
+            )
+        else:
+            st.warning(
+                f"**OLLAMA_HOST** configuré : `{_host_display}`\n\n"
+                "Ollama ne répond pas à cette adresse. Vérifiez que :\n"
+                "- Ollama tourne sur votre PC (`ollama serve` dans un terminal)\n"
+                "- ngrok est actif (`ngrok http 11434 --host-header=localhost`)\n"
+                "- L'adresse ngrok correspond bien à celle dans les Secrets",
+                icon="⚠️",
+            )
+            if st.button("🔍 Tester la connexion", key="test_ollama_host"):
+                with st.spinner("Test en cours…"):
+                    _ok = assurer_ollama_disponible()
+                if _ok:
+                    st.success(f"Connexion établie — modèle : **{active_model_name()}**", icon="✅")
+                    st.rerun()
+                else:
+                    st.error(
+                        "Impossible de joindre Ollama.\n\n"
+                        "Relancez ngrok et mettez à jour l'URL dans les Secrets Streamlit "
+                        "*(l'URL ngrok change à chaque démarrage en version gratuite)*."
+                    )
+    else:
+        st.error(
+            "**OLLAMA_HOST non configuré** — les modes IA (🔢 🏭 💬 🤖) sont désactivés.\n\n"
+            "Pour activer l'IA, suivez le **Guide de démarrage** ci-dessus (Étapes 1–3), "
+            "puis ajoutez dans les Secrets Streamlit :\n\n"
+            "```toml\nOLLAMA_HOST = \"https://xxxx.ngrok-free.app\"\n```",
+            icon="☁️",
+        )
+        st.link_button("Ouvrir les Secrets Streamlit", "https://share.streamlit.io",
+                       use_container_width=False)
+
+    st.divider()
+
 # ── Modèle Ollama ──────────────────────────────────────────────────────────────
 if _nav_highlight in ("model", "check"):
     st.markdown('<div id="section-modele"></div>', unsafe_allow_html=True)
