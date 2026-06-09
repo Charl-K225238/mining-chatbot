@@ -10,7 +10,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import streamlit as st
 
 from core.data_loader import load_css, sidebar_stats
-from core.ollama_client import initialiser_ollama
 
 st.set_page_config(
     page_title="Miny — Assistant BI",
@@ -19,11 +18,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 load_css()
-
-_ollama_status = initialiser_ollama()
-_ollama_ok    = _ollama_status.get("disponible", False)
-_ollama_model = _ollama_status.get("modele_actif") or "—"
-_ollama_exe   = _ollama_status.get("exe")
 
 for _k, _v in {
     "messages": [],
@@ -38,16 +32,6 @@ for _k, _v in {
 with st.sidebar:
     st.markdown("## ⛏ Miny")
     st.caption("Assistant BI · Mine de bauxite R2M CI")
-    if _ollama_ok:
-        st.success(f"{_ollama_model} disponible", icon="🤖")
-    elif _ollama_exe:
-        st.warning("Ollama installé — démarrage automatique en cours…", icon="🤖")
-    else:
-        st.error("Ollama non installé — ⚡ Analytique fonctionne", icon="🤖")
-        if st.button("Installer Ollama →", key="sb_install_guide",
-                     use_container_width=True):
-            st.session_state["params_highlight"] = "install"
-            st.switch_page("pages/4_Parametres.py")
     st.divider()
     _s = sidebar_stats()
     if _s.get("years"):
@@ -65,51 +49,32 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── Les 4 modes ───────────────────────────────────────────────────────────────
-st.markdown("#### Posez n'importe quelle question — Miny choisit le bon moteur automatiquement")
+# ── Ce que Miny sait faire ────────────────────────────────────────────────────
+st.markdown("#### Interrogez vos données minières en français — réponses instantanées")
 
-m1, m2, m3, m4 = st.columns(4)
 _card = (
     "padding:14px 16px;border-radius:10px;height:100%;border-left:4px solid {color};"
     "background:{bg};margin-bottom:4px"
 )
-m1.markdown(
+_d1, _d2, _d3 = st.columns(3)
+_d1.markdown(
     f'<div style="{_card.format(color="#27AE60", bg="#f0faf3")}">'
-    "<b>⚡ Analytique</b><br>"
-    "<small style='color:#555'>Tonnage · Pannes · Carburant · Objectifs · PGES · Heures machine</small>"
+    "<b>📦 Production & Tonnage</b><br>"
+    "<small style='color:#555'>Descendu · Excavé · Transporté · Port · Navire</small>"
     "</div>", unsafe_allow_html=True,
 )
-m2.markdown(
-    f'<div style="{_card.format(color="#283593", bg="#f0f1fa")}">'
-    "<b>🔢 Calcul</b><br>"
-    "<small style='color:#555'>Arithmétique · Pourcentages · CAGR · ROI · Conversions d'unités</small>"
+_d2.markdown(
+    f'<div style="{_card.format(color="#E74C3C", bg="#fff5f5")}">'
+    "<b>⚠️ Pannes & Heures machine</b><br>"
+    "<small style='color:#555'>Tombereaux · Trencher · Disponibilité · Shifts</small>"
     "</div>", unsafe_allow_html=True,
 )
-m3.markdown(
-    f'<div style="{_card.format(color="#e65100", bg="#fff8f0")}">'
-    "<b>🏭 Expertise</b><br>"
-    "<small style='color:#555'>Normes ISO · Référentiels · Bonnes pratiques · Réglementation minière</small>"
+_d3.markdown(
+    f'<div style="{_card.format(color="#2471A3", bg="#f0f6fc")}">'
+    "<b>🛢️ Carburant & Objectifs</b><br>"
+    "<small style='color:#555'>Par engin · Par mois · Approvisionnement · Taux réalisation</small>"
     "</div>", unsafe_allow_html=True,
 )
-m4.markdown(
-    f'<div style="{_card.format(color="#6a1b9a", bg="#faf0ff")}">'
-    "<b>💬 Général</b><br>"
-    "<small style='color:#555'>Salutations · Dates · Culture générale · Questions hors-données</small>"
-    "</div>", unsafe_allow_html=True,
-)
-
-# ── Première utilisation ──────────────────────────────────────────────────────
-if not _ollama_ok:
-    st.warning(
-        "**Première utilisation ?** Ollama n'est pas encore démarré sur ce PC.\n\n"
-        "Rendez-vous dans **⚙️ Paramètres** pour le guide d'installation en 4 étapes "
-        "(gratuit, modèles locaux, aucun abonnement).",
-        icon="🚀",
-    )
-    if st.button("⚙️ Ouvrir le guide de démarrage →", type="primary"):
-        st.session_state["params_highlight"] = "install"
-        st.switch_page("pages/4_Parametres.py")
-    st.divider()
 
 # ── Navigation ────────────────────────────────────────────────────────────────
 st.markdown("#### Navigation")
@@ -158,22 +123,9 @@ with col4:
         f'<div style="{_nav_card.format(color="#F39C12")}">'
         '<div style="font-size:2rem">⚙️</div>'
         '<div style="font-weight:700;color:#F39C12">Paramètres</div>'
-        '<div style="font-size:.8rem;color:#666">Import · Ollama · Config</div>'
+        '<div style="font-size:.8rem;color:#666">Import des données</div>'
         "</div>", unsafe_allow_html=True,
     )
     if st.button("Ouvrir →", key="nav_params", use_container_width=True):
         st.switch_page("pages/4_Parametres.py")
 
-# ── Déploiement cloud ─────────────────────────────────────────────────────────
-with st.expander("☁️ Déploiement Streamlit Cloud — ce qu'il faut savoir", expanded=False):
-    st.markdown("""
-**Mode ⚡ Analytique (DuckDB)** : fonctionne partout, y compris sur Streamlit Cloud. Aucune dépendance externe.
-
-**Modes 🔢 Calcul · 🏭 Expertise · 💬 Général · 🤖 Documents** : nécessitent **Ollama**, qui tourne en local.
-Sur Streamlit Cloud, Ollama n'est **pas disponible** — ces modes retourneront une erreur.
-
-**Options pour déployer avec LLM :**
-1. **Serveur dédié** (VPS, Docker) — installez Ollama et pointez `OLLAMA_BASE_URL` vers votre serveur
-2. **API cloud** — remplacez Ollama par Groq (gratuit, rapide) ou OpenAI dans `core/ollama_client.py`
-3. **Usage local uniquement** — démarrez l'app sur votre poste avec `.venv\\Scripts\\python.exe -m streamlit run app.py`
-""")

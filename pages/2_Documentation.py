@@ -33,29 +33,6 @@ def _try_in_assistant(q: str) -> None:
     st.session_state["pending_question"] = q
     st.switch_page("pages/1_Assistant.py")
 
-# ── Démarrage rapide ───────────────────────────────────────────────────────────
-with st.expander("🚀 Démarrage rapide — Ollama et modèles (si pas encore configuré)", expanded=False):
-    st.markdown("""
-**1. Installer Ollama** — [ollama.com](https://ollama.com) → Download for Windows → installer
-
-**2. Choisir son modèle selon sa RAM**
-
-| RAM | Modèle | Commande |
-|-----|--------|----------|
-| < 4 Go | `phi3:mini` | `ollama pull phi3:mini` |
-| 4–8 Go | `qwen2.5:3b` *(défaut)* | `ollama pull qwen2.5:3b` |
-| 8–16 Go | `qwen2.5:7b` | `ollama pull qwen2.5:7b` |
-| > 16 Go | `qwen2.5:14b` | `ollama pull qwen2.5:14b` |
-
-**3. Coller la commande dans PowerShell** (Windows → tapez `powershell` → Entrée)
-
-**4. C'est prêt** — Miny démarre Ollama automatiquement à chaque question LLM.
-
-> Avec 8 Go : téléchargez `qwen2.5:3b` + `phi3:mini`. Miny bascule automatiquement sur le plus léger si nécessaire.
-
-👉 Guide complet et téléchargement depuis l'app : **⚙️ Paramètres → Guide de démarrage**
-""")
-
 # ── Questions de suivi ─────────────────────────────────────────────────────────
 with st.expander("🔄 Questions de suivi — comment ça marche ?", expanded=False):
     st.markdown("""
@@ -103,24 +80,14 @@ pour affiner la réponse — sans avoir à tout retaper.
     )
 
 # ── Capacités & limites ────────────────────────────────────────────────────────
-with st.expander("📖 Capacités, 4 modes de réponse et types de tonnage", expanded=False):
+with st.expander("📖 Capacités et types de tonnage", expanded=False):
     st.markdown("""
-**Les 4 modes de réponse — Miny choisit automatiquement**
+**Comment Miny répond**
 
-| Mode | Badge | Délai typique | Utilisé pour |
-|------|-------|--------------|-------------|
-| ⚡ Analytique | vert | < 1 s | Tonnage, pannes, heures machine, objectifs, carburant, PGES |
-| 🔢 Calcul | bleu | 10–40 s | Arithmétique, pourcentages, CAGR, ROI, conversions d'unités |
-| 🏭 Expertise | orange | 15–60 s | Normes ISO, référentiels, bonnes pratiques, réglementation minière |
-| 💬 Général | violet | 8–30 s | Salutations, dates, définitions, culture générale |
-| 🤖 LLM/Documents | bleu | 15–60 s | Recherche dans PDF, DOCX, TXT uploadés |
-
-> **Délais variables** selon la RAM disponible et le modèle choisi. Avec `phi3:mini` (< 4 Go) : divisez les délais LLM par 2.
-
-> Les modes 🔢 🏭 💬 🤖 nécessitent **Ollama** en local. Sur Streamlit Cloud, seul ⚡ Analytique fonctionne.
+Miny analyse votre question en langage naturel et interroge directement les données
+chargées — les réponses sont instantanées (< 1 s).
 """)
 
-    st.divider()
     col_a, col_b = st.columns(2)
     with col_a:
         st.markdown("""
@@ -131,13 +98,9 @@ with st.expander("📖 Capacités, 4 modes de réponse et types de tonnage", exp
 - **Objectifs & taux** : prévu vs réalisé, taux d'accomplissement
 - **Carburant** : par mois, par engin, approvisionnement citerne
 - **PGES & HSE** : actions, statuts, responsables, domaines
-- **Calculs** : CAGR, ROI, pourcentages, arithmétique, conversions
-- **Expertise** : normes ISO, référentiels, bonnes pratiques minières
-- **Documents uploadés** : recherche dans PDF, DOCX, TXT
 
 **Limites ⚠️**
 - Données uniquement importées — pas d'accès Internet
-- LLM requis pour tous les modes sauf ⚡ Analytique
 - PDFs scannés (images) non pris en charge
 """)
     with col_b:
@@ -153,56 +116,11 @@ with st.expander("📖 Capacités, 4 modes de réponse et types de tonnage", exp
 | `navire` | Chargé sur navire | `productivite_loading` |
 """)
 
-# ── Recherche documentaire ─────────────────────────────────────────────────────
-with st.expander("📄 Recherche dans vos documents uploadés", expanded=False):
-    col_d1, col_d2 = st.columns(2)
-    with col_d1:
-        st.markdown("""
-**Formats acceptés :**
-- 📄 **PDF** — rapports d'inspection, audits *(PDF textuel, non scanné)*
-- 📝 **DOCX** — rapports Word
-- 🗒️ **TXT** — textes bruts, exports
-
-**Comment uploader :**
-1. Page **⚙️ Paramètres** → section *Charger un fichier*
-2. Sélectionnez votre fichier
-3. Cliquez **⬆️ Importer et traiter**
-
-**Questions types :**
-- *"Quel organisme a réalisé l'inspection ?"*
-- *"Quelles sont les non-conformités majeures ?"*
-- *"Délais de levée des non-conformités ?"*
-- *"Prioriser les actions correctives urgentes"*
-""")
-    with col_d2:
-        st.markdown("""
-**Points importants ⚠️**
-- Les réponses sur documents passent par **Ollama** (5–30 s)
-- Les PDFs **scannés** (images) ne sont **pas lisibles**
-- Si Miny répond "je n'ai pas trouvé" → vérifiez le fichier et réindexez
-
-**Différence données / documents :**
-
-| | Données Excel | Documents PDF/DOCX |
-|--|--|--|
-| Moteur | ⚡ Analytique | 🤖 Ollama |
-| Délai | < 1 s | 5–30 s |
-| Type | Chiffres, tableaux | Texte libre |
-""")
-
 # ── Exemples de questions par domaine ─────────────────────────────────────────
 with st.expander("💬 Exemples de questions par domaine", expanded=False):
     st.caption("Copiez-collez ces questions dans l'**Assistant**.")
 
     EXEMPLES: dict[str, list[str]] = {
-        "🔢 Calcul & Expertise": [
-            "Calculer le CAGR si le tonnage passe de 1200 à 1850 en 3 ans",
-            "15% de 3500",
-            "Convertir 15 km/h en m/s",
-            "Quels référentiels qualité pour une mine de bauxite ?",
-            "Quelles normes ISO s'appliquent à une exploitation minière ?",
-            "Quelles meilleures pratiques HSE pour une mine en Afrique de l'Ouest ?",
-        ],
         "📦 Tonnage": [
             "Tonnage descendu par mois en 2026",
             "Tonnage par semaine en 2026",
@@ -229,6 +147,7 @@ with st.expander("💬 Exemples de questions par domaine", expanded=False):
             "Carburant consommé en 2024",
             "Carburant par mois en 2024",
             "Carburant par engin en 2024",
+            "Carburant par engin en 2024 tombereau",
             "Approvisionnement citerne en 2024",
         ],
         "📋 PGES & HSE": [
@@ -242,12 +161,6 @@ with st.expander("💬 Exemples de questions par domaine", expanded=False):
             "Taux accomplissement 2025",
             "Objectifs vs réalisé 2025",
             "Objectifs excavation 2025",
-        ],
-        "📄 Documents": [
-            "Quel organisme a réalisé l'inspection ?",
-            "Quelles sont les non-conformités majeures ?",
-            "Délais de levée des non-conformités",
-            "Quelles actions correctives prioriser en urgence ?",
         ],
     }
 
