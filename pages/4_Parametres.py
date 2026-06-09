@@ -193,20 +193,23 @@ with st.expander(
         )
         _ng1, _ng2 = st.columns([3, 2])
         with _ng1:
-            st.markdown("**1.** Créez un compte :")
-            st.link_button("Créer un compte ngrok gratuit",
+            st.markdown("**1.** Créez un compte ngrok (gratuit, sans carte bancaire) :")
+            st.link_button("Créer un compte ngrok",
                            "https://dashboard.ngrok.com/signup", use_container_width=True)
+            st.markdown("**2.** Récupérez votre token — cliquez sur ce bouton :")
+            st.link_button("📋 Copier mon Authtoken ngrok",
+                           "https://dashboard.ngrok.com/get-started/your-authtoken",
+                           use_container_width=True)
             st.markdown(
-                "**2.** Dans votre dashboard ngrok, allez dans **Your Authtoken** "
-                "et copiez le token affiché\n\n"
-                "**3.** Dans un terminal, collez ces deux commandes "
-                "*(remplacez VOTRE_TOKEN par le token copié)* :"
+                "Sur cette page, cliquez sur le **bouton Copy** *(ne sélectionnez pas "
+                "le texte à la main — le token peut être tronqué)*."
             )
-            st.code("ngrok config add-authtoken VOTRE_TOKEN", language="bash")
+            st.markdown("**3.** Dans un terminal, exécutez ces deux commandes *(l'une après l'autre)* :")
+            st.code("ngrok config add-authtoken COLLEZ_VOTRE_TOKEN_ICI", language="bash")
             st.code("ngrok http 11434 --host-header=localhost", language="bash")
             st.markdown(
-                "**4.** Une fenêtre s'ouvre avec une adresse **Forwarding**. "
-                "Copiez l'adresse qui commence par `https://` :\n\n"
+                "**4.** Une fenêtre s'affiche avec une adresse **Forwarding**. "
+                "Copiez l'adresse `https://…` :\n\n"
                 "```\nForwarding  https://xxxx.ngrok-free.app\n```"
             )
         with _ng2:
