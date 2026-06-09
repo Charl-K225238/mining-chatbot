@@ -195,9 +195,23 @@ TABLES: dict[str, TableConfig] = {
         date_cols=["Date"],
         numeric_cols=["heure", "km début", "km fin", "Vit. moy (km/h)"],
     ),
+    # Citerne IVEQI — données 2023-2026 (onglet principal, 4 775 lignes).
+    # NB : l'onglet "CITERN IVEQI (2)" ne contient que 2024 et a été ignoré.
     "carburant_citerne": TableConfig(
         file="CARBURANT.xlsx",
-        sheet="CITERN IVEQI (2)",
+        sheet="CITERN IVEQI",
+        date_cols=["Date"],
+        numeric_cols=[
+            "Quantité Initiale Théorique (L)",
+            "Depotage",
+            "Quantité Servie (L)",
+            "Quantité Restante (L)",
+        ],
+    ),
+    # Cuve Petro Ivoire — source d'approvisionnement distincte, 2023-2026.
+    "carburant_cuve_petro": TableConfig(
+        file="CARBURANT.xlsx",
+        sheet="CUVE PETRO-IVOIRE",
         date_cols=["Date"],
         numeric_cols=[
             "Quantité Initiale Théorique (L)",

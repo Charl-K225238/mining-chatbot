@@ -112,6 +112,11 @@ _NULL_BUSINESS_REASONS: dict[str, dict[str, NullReason]] = {
             message="Vide pour les lignes de consommation (pas d'approvisionnement ce jour).",
         ),
     },
+    "carburant_cuve_petro": {
+        "Depotage": NullReason(
+            message="Vide pour les lignes de consommation (pas d'approvisionnement ce jour).",
+        ),
+    },
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -123,7 +128,8 @@ _TABLE_DESCRIPTIONS: dict[str, str] = {
     "shifts_horaires":        "Heures moteur / machine par shift (trencher)",
     "shifts_personnel":       "Présence et shifts du personnel",
     "journal":                "Journal d'activité et pannes trencher",
-    "carburant_citerne":      "Consommation et approvisionnement carburant (Petro Ivoire / Iveqi)",
+    "carburant_citerne":      "Consommation et approvisionnement carburant (citerne Iveqi)",
+    "carburant_cuve_petro":   "Consommation et approvisionnement carburant (Cuve Petro Ivoire)",
     "carburant_activites":    "Activités engins liées au carburant",
     "transport_minerai_paa":  "Transport mine → Port Autonome d'Abidjan",
     "productivite_loading":   "Chargement des navires",

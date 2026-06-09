@@ -43,7 +43,13 @@ st.markdown("## ⚙️ Paramètres")
 # ── Redirection depuis l'Assistant (flag de session) ──────────────────────────
 _nav_highlight = st.session_state.pop("params_highlight", None)
 if _nav_highlight == "install":
-    if _IS_WINDOWS:
+    if _IS_STREAMLIT_CLOUD:
+        st.info(
+            "**Ollama n'est pas accessible depuis ce serveur cloud.** "
+            "Suivez le guide ci-dessous pour exposer votre Ollama local et configurer OLLAMA_HOST.",
+            icon="☁️",
+        )
+    elif _IS_WINDOWS:
         st.info(
             "**Ollama n'est pas encore installé.** "
             "Le guide ci-dessous vous accompagne en 4 étapes (5 min, gratuit).",
@@ -51,9 +57,9 @@ if _nav_highlight == "install":
         )
     else:
         st.info(
-            "**Ollama n'est pas accessible depuis ce serveur cloud.** "
-            "Suivez le guide ci-dessous pour exposer votre Ollama local et configurer OLLAMA_HOST.",
-            icon="🌐",
+            "**Ollama n'est pas installé ou n'est pas démarré.** "
+            "Suivez le guide ci-dessous pour l'installer et le démarrer.",
+            icon="🐧",
         )
 elif _nav_highlight == "model":
     st.info(
