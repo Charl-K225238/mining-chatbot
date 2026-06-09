@@ -214,7 +214,7 @@ with st.expander(
             )
         with _ng2:
             st.warning(
-                "⚠️ **Laissez cette fenêtre ouverte** pendant que vous utilisez Miny. "
+                "**Laissez cette fenêtre ouverte** pendant que vous utilisez Miny. "
                 "La fermer coupe la connexion.",
                 icon="⚠️",
             )
