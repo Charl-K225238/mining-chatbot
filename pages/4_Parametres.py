@@ -158,93 +158,33 @@ with st.expander(
                 _dl("qwen2.5:14b", f"{key_prefix}_14b")
 
     if IS_STREAMLIT_CLOUD:
-        # ── Guide Streamlit Cloud ──────────────────────────────────────────────
-        st.info(
-            "Miny est hébergé sur un serveur cloud sans accès à votre PC. "
-            "Deux options pour activer les modes IA :",
-            icon="☁️",
-        )
-
-        _tab_groq, _tab_ngrok = st.tabs(["⚡ Option A — Groq (recommandé)", "🔗 Option B — ngrok"])
-
-        with _tab_groq:
-            st.markdown(
-                "**Groq** est une API IA gratuite, sans installation, "
-                "sans délai et sans URL à gérer. C'est l'option la plus simple."
-            )
-            st.markdown("---")
-            st.markdown("#### Étape 1 — Créer un compte Groq gratuit")
+        # ── Guide Streamlit Cloud — Groq uniquement ────────────────────────────
+        st.markdown("---")
+        st.markdown("#### Étape 1 — Créer un compte Groq gratuit")
+        _gc1, _gc2 = st.columns([3, 2])
+        with _gc1:
             st.link_button("Créer un compte Groq", "https://console.groq.com/login",
-                           type="primary", use_container_width=False)
-            st.markdown("---")
-            st.markdown("#### Étape 2 — Générer une clé API")
-            st.link_button("Mes clés API Groq", "https://console.groq.com/keys",
-                           use_container_width=False)
-            st.markdown(
-                "Cliquez **Create API key**, donnez-lui un nom (ex: `miny`), "
-                "puis copiez la clé affichée *(elle commence par `gsk_…`)*."
-            )
-            st.markdown("---")
-            st.markdown("#### Étape 3 — Ajouter la clé dans Miny")
-            st.link_button("Ouvrir les Secrets Streamlit", "https://share.streamlit.io",
-                           use_container_width=False)
-            st.markdown(
-                "Votre application → menu **⋯** → **Settings** → **Secrets**, "
-                "puis collez :"
-            )
-            st.code('GROQ_API_KEY = "gsk_votre_cle_ici"', language="toml")
-            st.markdown("Cliquez **Save** — Miny redémarre en 30 secondes.")
-            st.success(
-                "C'est tout. Aucune installation, aucune fenêtre à laisser ouverte.",
-                icon="✅",
-            )
-
-        with _tab_ngrok:
-            st.markdown(
-                "Option alternative si vous voulez utiliser vos propres modèles Ollama "
-                "installés sur votre PC."
-            )
-            st.markdown("---")
-            st.markdown("#### Étape 1 — Installer Ollama + modèle sur votre PC")
-            _e1w, _e1l = st.columns(2)
-            with _e1w:
-                st.markdown("**Windows**")
-                st.link_button("⬇️ Télécharger Ollama pour Windows",
-                               "https://ollama.com/download/OllamaSetup.exe",
-                               use_container_width=True)
-            with _e1l:
-                st.markdown("**Mac / Linux** — dans un terminal :")
-                st.code("curl -fsSL https://ollama.com/install.sh | sh", language="bash")
-            st.markdown("Puis téléchargez un modèle *(terminal)* :")
-            st.code("ollama pull qwen2.5:3b", language="bash")
-            st.markdown("---")
-            st.markdown("#### Étape 2 — Exposer Ollama avec ngrok")
-            _ng1, _ng2 = st.columns([3, 2])
-            with _ng1:
-                st.link_button("Créer un compte ngrok gratuit",
-                               "https://dashboard.ngrok.com/signup", use_container_width=True)
-                st.link_button("📋 Copier mon Authtoken ngrok",
-                               "https://dashboard.ngrok.com/get-started/your-authtoken",
-                               use_container_width=True)
-                st.markdown("Dans un terminal *(l'un après l'autre)* :")
-                st.code("ngrok config add-authtoken COLLEZ_VOTRE_TOKEN_ICI", language="bash")
-                st.code("ngrok http 11434 --host-header=localhost", language="bash")
-                st.markdown(
-                    "Copiez l'adresse **Forwarding** qui s'affiche :\n\n"
-                    "```\nForwarding  https://xxxx.ngrok-free.app\n```"
-                )
-            with _ng2:
-                st.warning(
-                    "**Laissez cette fenêtre ouverte** pendant l'utilisation de Miny.",
-                    icon="⚠️",
-                )
-            st.markdown("---")
-            st.markdown("#### Étape 3 — Relier à Miny")
-            st.link_button("Ouvrir les Secrets Streamlit",
-                           "https://share.streamlit.io", use_container_width=False)
-            st.markdown("Application → **⋯** → **Settings** → **Secrets** :")
-            st.code('OLLAMA_HOST = "https://xxxx.ngrok-free.app"', language="toml")
-            st.markdown("Cliquez **Save** puis revenez ici pour tester la connexion.")
+                           type="primary", use_container_width=True)
+            st.caption("Gratuit · sans carte bancaire · sans installation")
+        with _gc2:
+            st.info("Groq est une API IA cloud : aucun logiciel à installer sur votre PC.",
+                    icon="☁️")
+        st.markdown("---")
+        st.markdown("#### Étape 2 — Générer une clé API")
+        st.link_button("Mes clés API Groq", "https://console.groq.com/keys",
+                       use_container_width=False)
+        st.markdown(
+            "Cliquez **Create API key**, donnez-lui un nom (ex: `miny`), "
+            "puis copiez la clé affichée *(elle commence par `gsk_…`)*."
+        )
+        st.markdown("---")
+        st.markdown("#### Étape 3 — Ajouter la clé dans Miny")
+        st.link_button("Ouvrir les Secrets Streamlit", "https://share.streamlit.io",
+                       use_container_width=False)
+        st.markdown("Votre application → menu **⋯** → **Settings** → **Secrets**, puis collez :")
+        st.code('GROQ_API_KEY = "gsk_votre_cle_ici"', language="toml")
+        st.markdown("Cliquez **Save** — Miny redémarre automatiquement en 30 secondes.")
+        st.success("C'est tout. Aucune installation, aucune fenêtre à laisser ouverte.", icon="✅")
         st.markdown("---")
 
     elif IS_WINDOWS:
@@ -265,7 +205,7 @@ with st.expander(
                 "Une fois installé, une petite icône 🦙 apparaît en bas à droite de l'écran."
             )
         with _w2:
-            st.info("🔒 Vos données restent sur votre PC — rien n'est envoyé sur Internet.",
+            st.info("Vos données restent sur votre PC — rien n'est envoyé sur Internet.",
                     icon="🔒")
         st.markdown("Cliquez ici quand l'installation est terminée :")
         _verifier_ollama_btn("win_verif")
@@ -351,9 +291,9 @@ uploaded = st.file_uploader(
 if uploaded:
     _ext = uploaded.name.rsplit(".", 1)[-1].lower()
     if _ext == "doc":
-        st.warning("⚠️ `.doc` sauvegardé mais **non indexé**. Convertissez en `.docx`.")
+        st.warning("`.doc` sauvegardé mais **non indexé**. Convertissez en `.docx`.", icon="⚠️")
     elif _ext == "csv":
-        st.info("ℹ️ CSV sauvegardé — pour l'analyser, importez en `.xlsx`.")
+        st.info("CSV sauvegardé — pour l'analyser, importez en `.xlsx`.", icon="ℹ️")
     st.write(f"📄 **{uploaded.name}** ({uploaded.size // 1024 or 1} Ko)")
     if st.button("⬆️ Importer et traiter", key="btn_import_params", use_container_width=True):
         from src.ingest.upload_handler import (

@@ -174,15 +174,30 @@ def _stream_groq(
                 yield token
     except Exception as exc:
         err = str(exc)
+        exc_type = type(exc).__name__
+        logger.error("Groq streaming error (%s): %s", exc_type, exc)
         if "rate_limit" in err.lower() or "429" in err:
-            # Quota dépassé → bascule modèle léger
             if model != GROQ_FALLBACK_MODEL:
                 yield SWITCH_MODEL_SENTINEL
                 yield from _stream_groq(messages, GROQ_FALLBACK_MODEL, max_tokens, temperature)
             else:
-                yield afficher_erreur_ollama(f"{_ERROR_PREFIX}Quota Groq dépassé")
+                yield "**Quota Groq dépassé.** Réessayez dans quelques instants."
+        elif "authentication" in err.lower() or "401" in err or "invalid api key" in err.lower():
+            yield (
+                "**Clé API Groq invalide.**\n\n"
+                "Vérifiez que `GROQ_API_KEY` est correctement saisie dans les Secrets Streamlit "
+                "*(sans espace avant/après la clé)*."
+            )
+        elif "not_found" in err.lower() or "404" in err or "does not exist" in err.lower():
+            yield (
+                f"**Modèle Groq introuvable** : `{model}`.\n\n"
+                "Vérifiez les modèles disponibles sur votre compte Groq."
+            )
         else:
-            yield afficher_erreur_ollama(f"{_ERROR_PREFIX}{exc}")
+            yield (
+                f"**Erreur Groq ({exc_type})** : {err[:300]}\n\n"
+                "_Les réponses analytiques (⚡) fonctionnent sans IA._"
+            )
 
 
 def _call_groq(
@@ -207,11 +222,18 @@ def _call_groq(
         return completion.choices[0].message.content or ""
     except Exception as exc:
         err = str(exc)
+        exc_type = type(exc).__name__
+        logger.error("Groq call error (%s): %s", exc_type, exc)
         if "rate_limit" in err.lower() or "429" in err:
             if model != GROQ_FALLBACK_MODEL:
                 return _call_groq(messages, GROQ_FALLBACK_MODEL, max_tokens, temperature)
-            return afficher_erreur_ollama(f"{_ERROR_PREFIX}Quota Groq dépassé")
-        return afficher_erreur_ollama(f"{_ERROR_PREFIX}{exc}")
+            return "**Quota Groq dépassé.** Réessayez dans quelques instants."
+        elif "authentication" in err.lower() or "401" in err or "invalid api key" in err.lower():
+            return (
+                "**Clé API Groq invalide.**\n\n"
+                "Vérifiez que `GROQ_API_KEY` est correctement saisie dans les Secrets Streamlit."
+            )
+        return f"**Erreur Groq ({exc_type})** : {err[:300]}"
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
